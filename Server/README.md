@@ -21,9 +21,8 @@ university/
 │   │   │   ├── service/         # Service Interfaces
 │   │   │   ├── service/impl/    # Service Implementations
 │   │   │   └── UniversityApplication.java # Spring Boot Main Class
-│   ├── resources/
-│   │   ├── application.properties # DB configuration
-│   │   └── data.sql               # Seed data (optional)
+│   └── resources/
+│       └── application.properties # application configuration
 └── pom.xml                        # Maven Build File
 
 ````
@@ -90,7 +89,7 @@ API will run at: `http://localhost:8080`
 | **/api/levels**      | `GET` `POST` `PUT` `DELETE` |
 | **/api/courses**     | `GET` `POST` `PUT` `DELETE` |
 | **/api/students**    | `GET` `POST` `PUT` `DELETE` |
-| **/api/enrollments** | `GET` `POST` `DELETE`       |
+| **/api/enrollments** | `GET` `POST` `PUT` `DELETE` |
 
 All endpoints follow **REST** principles with proper validation and error handling.
 
