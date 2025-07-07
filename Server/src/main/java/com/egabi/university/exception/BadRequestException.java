@@ -7,8 +7,11 @@ import org.springframework.http.HttpStatus;
  * Example: Required field missing, bad JSON, wrong format.
  */
 public class BadRequestException extends ApiException {
-    public BadRequestException(String message) {
+    private final String errorCode;
+    
+    public BadRequestException(String message, String errorCode) {
         super(message);
+        this.errorCode = errorCode;
     }
     
     @Override
@@ -18,6 +21,6 @@ public class BadRequestException extends ApiException {
     
     @Override
     public String getErrorCode() {
-        return "BAD_REQUEST";
+        return this.errorCode;
     }
 }

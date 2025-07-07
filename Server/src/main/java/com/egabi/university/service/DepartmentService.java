@@ -15,10 +15,10 @@ public interface DepartmentService {
     /**
      * Get Department by ID.
      *
-     * @param id the ID of the department
+     * @param departmentId the ID of the department
      * @return Department object if exists, null otherwise
      */
-    DepartmentDTO getDepartmentById(Long id);
+    DepartmentDTO getDepartmentById(Long departmentId);
     
     /**
      * Create a new department.
@@ -31,15 +31,16 @@ public interface DepartmentService {
     /**
      * Update an existing department.
      *
+     * @param departmentId  the ID of the department to be updated
      * @param departmentDTO the department data transfer object containing updated department details
      * @return the updated DepartmentDTO object
      */
-    DepartmentDTO updateDepartment(DepartmentDTO departmentDTO);
+    DepartmentDTO updateDepartment(Long departmentId, DepartmentDTO departmentDTO);
     
     /**
      * Delete a department by its ID.
      *
-     * @param id the ID of the department to be deleted
+     * @param departmentId the ID of the department to be deleted
      */
-    void deleteDepartment(Long id);
+    void deleteDepartment(Long departmentId);
 }

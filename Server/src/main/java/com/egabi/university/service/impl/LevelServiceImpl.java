@@ -6,9 +6,9 @@ import com.egabi.university.entity.Level;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.LevelMapper;
-import com.egabi.university.repository.FacultyRepository;
 import com.egabi.university.repository.LevelRepository;
 import com.egabi.university.service.LevelService;
+import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,8 @@ import java.util.Optional;
 public class LevelServiceImpl implements LevelService {
     
     private final LevelRepository levelRepository;
-    private final FacultyRepository facultyRepository;
     private final LevelMapper levelMapper;
+    private final ValidationService validationService;
     
     
     @Override
@@ -43,10 +43,10 @@ public class LevelServiceImpl implements LevelService {
         if (levelRepository.existsByNameAndFacultyId(levelDTO.getName(), levelDTO.getFacultyId()))
             throw new ConflictException("Level with name " + levelDTO.getName() + " already exists in this faculty", "LEVEL_ALREADY_EXISTS");
         
-        // Check if the level already exists
+        // Map the DTO to the entity
         Level level = levelMapper.toEntity(levelDTO);
         
-        // Check if the level name already exists
+        // Validate and save the level
         level = validateAndSaveLevel(level);
         
         // Map the saved entity back to DTO
@@ -76,18 +76,19 @@ public class LevelServiceImpl implements LevelService {
         if (!levelRepository.existsById(id))
             throw new NotFoundException("Level with id " + id + " not found", "LEVEL_NOT_FOUND");
         
-        // Check if the level is associated with any departments or courses
+        //TODO Check if the level is associated with any students or courses
         
         // Delete the level
         levelRepository.deleteById(id);
     }
     
     private Level validateAndSaveLevel(Level level) {
-        // Validate faculty
+        // Validate faculty is set
         var facultyId = Optional.ofNullable(level.getFaculty()).map(Faculty::getId)
-                .orElseThrow(() -> new NotFoundException("Department must be in a faculty", "FACULTY_NOT_FOUND"));
-        var faculty = facultyRepository.findById(facultyId)
-                .orElseThrow(() -> new NotFoundException("Faculty with id " + facultyId + " not found", "FACULTY_NOT_FOUND"));
+                .orElseThrow(() -> new NotFoundException("Level must be in a faculty", "FACULTY_NOT_FOUND"));
+        
+        // Validate faculty exists
+        var faculty = validationService.validateFacultyExists(facultyId);
         level.setFaculty(faculty);
         
         // Save the level

@@ -1,81 +1,203 @@
 package com.egabi.university.service.validation.impl;
 
-import com.egabi.university.entity.Department;
-import com.egabi.university.entity.Faculty;
-import com.egabi.university.entity.Level;
+import com.egabi.university.entity.*;
+import com.egabi.university.exception.BadRequestException;
+import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
-import com.egabi.university.repository.DepartmentRepository;
-import com.egabi.university.repository.FacultyRepository;
-import com.egabi.university.repository.LevelRepository;
+import com.egabi.university.repository.*;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * Default implementation of {@link ValidationService}.
+ * Provides centralized validation logic for checking entity existence and referential integrity.
+ */
 @Service
 @RequiredArgsConstructor
 public class ValidationServiceImpl implements ValidationService {
     
     private final FacultyRepository facultyRepository;
-    private final DepartmentRepository departmentRepository;
     private final LevelRepository levelRepository;
+    private final DepartmentRepository departmentRepository;
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
+    private final InstructorRepository instructorRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    
+    // ============================
+    // Faculty
+    // ============================
     
     @Override
-    public Faculty validateFaculty(Long facultyId) {
+    public Faculty getFacultyByIdOrThrow(Long facultyId) {
         return facultyRepository.findById(facultyId)
                 .orElseThrow(() -> new NotFoundException(
                         "Faculty with id " + facultyId + " not found", "FACULTY_NOT_FOUND"));
     }
     
     @Override
-    public Department validateDepartment(Long departmentId) {
+    public void assertFacultyExists(Long facultyId, boolean shouldExist) {
+        boolean exists = facultyRepository.existsById(facultyId);
+        if (shouldExist && !exists) {
+            throw new NotFoundException("Faculty with id " + facultyId + " not found", "FACULTY_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException("Faculty with id " + facultyId + " already exists", "FACULTY_ALREADY_EXISTS");
+        }
+    }
+    
+    
+    // ============================
+    // Level
+    // ============================
+    
+    @Override
+    public Level getLevelByIdOrThrow(Long levelId) {
+        return levelRepository.findById(levelId)
+                .orElseThrow(() -> new NotFoundException(
+                        "Level with id " + levelId + " not found", "LEVEL_NOT_FOUND"));
+    }
+    
+    @Override
+    public void assertLevelExists(Long levelId, boolean shouldExist) {
+        boolean exists = levelRepository.existsById(levelId);
+        if (shouldExist && !exists) {
+            throw new NotFoundException("Level with id " + levelId + " not found", "LEVEL_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException("Level with id " + levelId + " already exists", "LEVEL_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // Department
+    // ============================
+    
+    @Override
+    public Department getDepartmentByIdOrThrow(Long departmentId) {
         return departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new NotFoundException(
                         "Department with id " + departmentId + " not found", "DEPARTMENT_NOT_FOUND"));
     }
     
     @Override
-    public Level validateLevel(Long levelId) {
-        return levelRepository.findById(levelId)
+    public void assertDepartmentExists(Long departmentId, boolean shouldExist) {
+        boolean exists = departmentRepository.existsById(departmentId);
+        if (shouldExist && !exists) {
+            throw new NotFoundException("Department with id " + departmentId + " not found", "DEPARTMENT_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException("Department with id " + departmentId + " already exists", "DEPARTMENT_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // Student
+    // ============================
+    
+    @Override
+    public Student getStudentByIdOrThrow(Long studentId) {
+        return studentRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundException(
-                        "Level with id " + levelId + " not found", "LEVEL_NOT_FOUND"));
+                        "Student with id " + studentId + " not found", "STUDENT_NOT_FOUND"));
+    }
+    
+    @Override
+    public void assertStudentExists(Long studentId, boolean shouldExist) {
+        boolean exists = studentRepository.existsById(studentId);
+        if (shouldExist && !exists) {
+            throw new NotFoundException("Student with id " + studentId + " not found", "STUDENT_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException("Student with id " + studentId + " already exists", "STUDENT_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // Course
+    // ============================
+    
+    @Override
+    public Course getCourseByCodeOrThrow(String courseCode) {
+        return courseRepository.findById(courseCode)
+                .orElseThrow(() -> new NotFoundException(
+                        "Course with code " + courseCode + " not found", "COURSE_NOT_FOUND"));
+    }
+    
+    @Override
+    public void assertCourseExists(String courseCode, boolean shouldExist) {
+        boolean exists = courseRepository.existsById(courseCode);
+        if (shouldExist && !exists) {
+            throw new NotFoundException("Course with code " + courseCode + " not found", "COURSE_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException("Course with code " + courseCode + " already exists", "COURSE_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // Instructor
+    // ============================
+    
+    @Override
+    public Instructor getInstructorByIdOrThrow(Long instructorId) {
+        return instructorRepository.findById(instructorId)
+                .orElseThrow(() -> new NotFoundException(
+                        "Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND"));
+    }
+    
+    @Override
+    public void assertInstructorExists(Long instructorId, boolean shouldExist) {
+        boolean exists = instructorRepository.existsById(instructorId);
+        if (shouldExist && !exists) {
+            throw new NotFoundException("Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException("Instructor with id " + instructorId + " already exists", "INSTRUCTOR_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // Enrollment
+    // ============================
+    
+    @Override
+    public Enrollment getEnrollmentByIdOrThrow(EnrollmentId enrollmentId) {
+        return enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new NotFoundException(
+                        "Enrollment for student_id " + enrollmentId.getStudentId() +
+                                " and course_code " + enrollmentId.getCourseCode() + " not found",
+                        "ENROLLMENT_NOT_FOUND"));
+    }
+    
+    @Override
+    public void assertEnrollmentExists(EnrollmentId enrollmentId, boolean shouldExist) {
+        boolean exists = enrollmentRepository.existsById(enrollmentId);
+        if (shouldExist && !exists) {
+            throw new NotFoundException(
+                    "Enrollment not found for student_id " + enrollmentId.getStudentId()
+                            + " and course_code " + enrollmentId.getCourseCode(),
+                    "ENROLLMENT_NOT_FOUND");
+        }
+        if (!shouldExist && exists) {
+            throw new ConflictException(
+                    "Enrollment already exists for student_id " + enrollmentId.getStudentId()
+                            + " and course_code " + enrollmentId.getCourseCode(),
+                    "ENROLLMENT_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // MISC
+    // ============================
+    
+    @Override
+    public void validateGradeInRange(Double grade) {
+        if (grade < 0.00 || grade > 100.00)
+            throw new BadRequestException(
+                    "Grade " + grade + " is Invalid, grade must be between 0.00 and 100.00",
+                    "INVALID_GRADE");
     }
 }
-
-
-// after modular refactoring
-//Long facultyId = extractIdOrThrow(
-//        level.getFaculty(),
-//        Faculty::getId,
-//        "Level must be linked to a faculty",
-//        "FACULTY_NOT_FOUND"
-//);
-
-//Faculty faculty = validateFaculty(facultyId);
-//level.
-//setFaculty(faculty);
-
-//before
-//var facultyId = Optional.ofNullable(level.getFaculty()).map(Faculty::getId)
-//        .orElseThrow(...);
-// after
-//var facultyId = validationService.extractIdOrThrow(level.getFaculty(), Faculty::getId, ...);
-
-
-/// **
-// * Safely extracts an ID from an entity reference.
-// * Throws NotFoundException with the given message if the entity is null.
-// *
-// * @param entity the entity reference
-// * @param extractor function to extract ID
-// * @param message error message
-// * @param errorCode custom error code
-// * @return the extracted ID
-// * @param <E> entity type
-// * @param <ID> ID type
-// */
-//default <E, ID> ID extractIdOrThrow(E entity, java.util.function.Function<E, ID> extractor,
-//                                    String message, String errorCode) {
-//    return Optional.ofNullable(entity)
-//            .map(extractor)
-//            .orElseThrow(() -> new NotFoundException(message, errorCode));
-//}
