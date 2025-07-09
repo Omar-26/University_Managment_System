@@ -1,43 +1,59 @@
 package com.egabi.university.service.impl;
 
 import com.egabi.university.dto.StudentDTO;
+import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Level;
 import com.egabi.university.entity.Student;
+import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.StudentMapper;
-import com.egabi.university.repository.DepartmentRepository;
-import com.egabi.university.repository.LevelRepository;
 import com.egabi.university.repository.StudentRepository;
 import com.egabi.university.service.StudentService;
+import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Default implementation of {@link StudentService}.
+ * Provides CRUD operations for managing students.
+ */
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
-    private final DepartmentRepository departmentRepository;
-    private final LevelRepository levelRepository;
+    private final ValidationService validationService;
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public List<StudentDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
         return studentMapper.toDTOs(students);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public StudentDTO getStudentById(Long id) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Student with id " + id + " not found", "STUDENT_NOT_FOUND"));
+    @Transactional
+    public StudentDTO getStudentById(Long studentId) {
+        Student student = validationService.getStudentByIdOrThrow(studentId);
         return studentMapper.toDTO(student);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public StudentDTO createStudent(StudentDTO studentDTO) {
         // Map the DTO to the entity
         Student student = studentMapper.toEntity(studentDTO);
@@ -49,14 +65,18 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.toDTO(student);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public StudentDTO updateStudent(Long studentId, StudentDTO studentDTO) {
         // Check if the student exists
-        if (!studentRepository.existsById(studentId))
-            throw new NotFoundException("Student with id " + studentDTO.getId() + " not found", "STUDENT_NOT_FOUND");
+        validationService.assertStudentExists(studentId);
         
         // Map the DTO to the entity
         Student updatedStudent = studentMapper.toEntity(studentDTO);
+        updatedStudent.setId(studentId);
         
         // Validate department - level and update student
         updatedStudent = vaildateAndSaveStudent(updatedStudent);
@@ -65,35 +85,54 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.toDTO(updatedStudent);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void deleteStudent(Long id) {
+    @Transactional
+    public void deleteStudent(Long studentId) {
         // Check if the student exists
-        if (!studentRepository.existsById(id))
-            throw new NotFoundException("Student with id " + id + " not found", "STUDENT_NOT_FOUND");
+        Student student = validationService.getStudentByIdOrThrow(studentId);
+        
+        // Ensure the student is not enrolled in any courses and prevent deletion
+        if (!student.getEnrollments().isEmpty())
+            throw new ConflictException("Cannot delete student with id " + studentId +
+                    " because they are enrolled in courses", "STUDENT_HAS_ENROLLMENTS");
         
         // Delete the student
-        studentRepository.deleteById(id);
+        studentRepository.deleteById(studentId);
     }
     
+    // ================================================================
+    // Helper methods
+    // ================================================================
+    
+    /**
+     * Validates the student entity and saves it to the database.
+     *
+     * @param student The student entity to validate and save.
+     * @return The saved student entity.
+     */
     private Student vaildateAndSaveStudent(Student student) {
         // Validate level
-        var levelId = Optional.ofNullable(student.getLevel()).map(Level::getId)
+        //1. ensure that the level is set
+        Long levelId = Optional.ofNullable(student.getLevel()).map(Level::getId)
                 .orElseThrow(() -> new NotFoundException("Student must have a level", "LEVEL_NOT_FOUND"));
-        var level = levelRepository.findById(levelId)
-                .orElseThrow(() -> new NotFoundException("Level with id " + levelId + " not found", "LEVEL_NOT_FOUND"));
+        
+        // 2. ensure that the level exists
+        Level level = validationService.getLevelByIdOrThrow(levelId);
         student.setLevel(level);
         
         // Validate department
-        if (student.getDepartment() != null) {
-            var departmentId = student.getDepartment().getId();
-            var department = departmentRepository.findById(departmentId)
-                    .orElseThrow(() -> new NotFoundException("Department with id " + departmentId + " not found", "DEPARTMENT_NOT_FOUND"));
-            student.setDepartment(department);
-        } else
-            student.setDepartment(null);
+        //1. ensure that the department is set
+        Long departmentId = Optional.ofNullable(student.getDepartment()).map(Department::getId)
+                .orElseThrow(() -> new NotFoundException("Student must be in a department", "DEPARTMENT_NOT_FOUND"));
+        
+        // 2. ensure that the department exists
+        Department department = validationService.getDepartmentByIdOrThrow(departmentId);
+        student.setDepartment(department);
         
         // Save the student
         return studentRepository.save(student);
     }
-    
 }

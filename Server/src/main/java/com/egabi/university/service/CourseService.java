@@ -31,10 +31,11 @@ public interface CourseService {
     /**
      * Update an existing course.
      *
+     * @param code      the code of the course to be updated
      * @param courseDTO the course data transfer object containing updated course details
      * @return the updated CourseDTO object
      */
-    CourseDTO updateCourse(CourseDTO courseDTO);
+    CourseDTO updateCourse(String code, CourseDTO courseDTO);
     
     /**
      * Delete a course by its code.

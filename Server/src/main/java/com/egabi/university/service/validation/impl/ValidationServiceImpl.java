@@ -9,7 +9,6 @@ import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 /**
  * Default implementation of {@link ValidationService}.
  * Provides centralized validation logic for checking entity existence and referential integrity.
@@ -30,29 +29,45 @@ public class ValidationServiceImpl implements ValidationService {
     // Faculty
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Faculty getFacultyByIdOrThrow(Long facultyId) {
         return facultyRepository.findById(facultyId)
-                .orElseThrow(() -> new NotFoundException(
-                        "Faculty with id " + facultyId + " not found", "FACULTY_NOT_FOUND"));
+                .orElseThrow(() -> new NotFoundException("Faculty with id " + facultyId + " not found", "FACULTY_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void assertFacultyExists(Long facultyId, boolean shouldExist) {
+    public void assertFacultyExists(Long facultyId) {
         boolean exists = facultyRepository.existsById(facultyId);
-        if (shouldExist && !exists) {
+        if (!exists)
             throw new NotFoundException("Faculty with id " + facultyId + " not found", "FACULTY_NOT_FOUND");
-        }
-        if (!shouldExist && exists) {
-            throw new ConflictException("Faculty with id " + facultyId + " already exists", "FACULTY_ALREADY_EXISTS");
-        }
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertFacultyNameUnique(String facultyName) {
+        boolean nameExists = facultyRepository.existsByNameIgnoreCase(facultyName);
+        if (nameExists) {
+            throw new ConflictException(
+                    "Faculty with name '" + facultyName + "' already exists",
+                    "FACULTY_ALREADY_EXISTS");
+        }
+    }
     
     // ============================
     // Level
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Level getLevelByIdOrThrow(Long levelId) {
         return levelRepository.findById(levelId)
@@ -60,21 +75,35 @@ public class ValidationServiceImpl implements ValidationService {
                         "Level with id " + levelId + " not found", "LEVEL_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void assertLevelExists(Long levelId, boolean shouldExist) {
+    public void assertLevelExists(Long levelId) {
         boolean exists = levelRepository.existsById(levelId);
-        if (shouldExist && !exists) {
+        if (!exists)
             throw new NotFoundException("Level with id " + levelId + " not found", "LEVEL_NOT_FOUND");
-        }
-        if (!shouldExist && exists) {
-            throw new ConflictException("Level with id " + levelId + " already exists", "LEVEL_ALREADY_EXISTS");
-        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertLevelNameUniquePerFaculty(String levelName, Long facultyId) {
+        boolean nameExists = levelRepository.existsByNameAndFacultyId(levelName, facultyId);
+        if (nameExists)
+            throw new ConflictException(
+                    "Level with name " + levelName + " already exists in this faculty",
+                    "LEVEL_ALREADY_EXISTS");
     }
     
     // ============================
     // Department
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Department getDepartmentByIdOrThrow(Long departmentId) {
         return departmentRepository.findById(departmentId)
@@ -82,21 +111,35 @@ public class ValidationServiceImpl implements ValidationService {
                         "Department with id " + departmentId + " not found", "DEPARTMENT_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void assertDepartmentExists(Long departmentId, boolean shouldExist) {
+    public void assertDepartmentExists(Long departmentId) {
         boolean exists = departmentRepository.existsById(departmentId);
-        if (shouldExist && !exists) {
+        if (!exists)
             throw new NotFoundException("Department with id " + departmentId + " not found", "DEPARTMENT_NOT_FOUND");
-        }
-        if (!shouldExist && exists) {
-            throw new ConflictException("Department with id " + departmentId + " already exists", "DEPARTMENT_ALREADY_EXISTS");
-        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertDepartmentNameUnique(String departmentName) {
+        boolean nameExists = departmentRepository.existsByNameIgnoreCase(departmentName);
+        if (nameExists)
+            throw new ConflictException(
+                    "Department with name '" + departmentName + "' already exists",
+                    "DEPARTMENT_ALREADY_EXISTS");
     }
     
     // ============================
     // Student
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Student getStudentByIdOrThrow(Long studentId) {
         return studentRepository.findById(studentId)
@@ -104,21 +147,23 @@ public class ValidationServiceImpl implements ValidationService {
                         "Student with id " + studentId + " not found", "STUDENT_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void assertStudentExists(Long studentId, boolean shouldExist) {
+    public void assertStudentExists(Long studentId) {
         boolean exists = studentRepository.existsById(studentId);
-        if (shouldExist && !exists) {
+        if (!exists)
             throw new NotFoundException("Student with id " + studentId + " not found", "STUDENT_NOT_FOUND");
-        }
-        if (!shouldExist && exists) {
-            throw new ConflictException("Student with id " + studentId + " already exists", "STUDENT_ALREADY_EXISTS");
-        }
     }
     
     // ============================
     // Course
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Course getCourseByCodeOrThrow(String courseCode) {
         return courseRepository.findById(courseCode)
@@ -126,6 +171,9 @@ public class ValidationServiceImpl implements ValidationService {
                         "Course with code " + courseCode + " not found", "COURSE_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void assertCourseExists(String courseCode, boolean shouldExist) {
         boolean exists = courseRepository.existsById(courseCode);
@@ -141,6 +189,9 @@ public class ValidationServiceImpl implements ValidationService {
     // Instructor
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Instructor getInstructorByIdOrThrow(Long instructorId) {
         return instructorRepository.findById(instructorId)
@@ -148,21 +199,23 @@ public class ValidationServiceImpl implements ValidationService {
                         "Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void assertInstructorExists(Long instructorId, boolean shouldExist) {
+    public void assertInstructorExists(Long instructorId) {
         boolean exists = instructorRepository.existsById(instructorId);
-        if (shouldExist && !exists) {
+        if (!exists)
             throw new NotFoundException("Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND");
-        }
-        if (!shouldExist && exists) {
-            throw new ConflictException("Instructor with id " + instructorId + " already exists", "INSTRUCTOR_ALREADY_EXISTS");
-        }
     }
     
     // ============================
     // Enrollment
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Enrollment getEnrollmentByIdOrThrow(EnrollmentId enrollmentId) {
         return enrollmentRepository.findById(enrollmentId)
@@ -172,6 +225,9 @@ public class ValidationServiceImpl implements ValidationService {
                         "ENROLLMENT_NOT_FOUND"));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void assertEnrollmentExists(EnrollmentId enrollmentId, boolean shouldExist) {
         boolean exists = enrollmentRepository.existsById(enrollmentId);
@@ -193,6 +249,9 @@ public class ValidationServiceImpl implements ValidationService {
     // MISC
     // ============================
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void validateGradeInRange(Double grade) {
         if (grade < 0.00 || grade > 100.00)

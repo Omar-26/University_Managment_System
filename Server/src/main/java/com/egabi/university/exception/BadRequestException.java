@@ -3,10 +3,11 @@ package com.egabi.university.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * 400 Bad Request — client sent invalid data.
- * Example: Required field missing, bad JSON, wrong format.
+ * Exception thrown when the user provides invalid input.
+ * Maps to HTTP 400 Bad Request.
  */
 public class BadRequestException extends ApiException {
+    
     private final String errorCode;
     
     public BadRequestException(String message, String errorCode) {
@@ -21,6 +22,6 @@ public class BadRequestException extends ApiException {
     
     @Override
     public String getErrorCode() {
-        return this.errorCode;
+        return errorCode;
     }
 }

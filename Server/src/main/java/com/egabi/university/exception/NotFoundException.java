@@ -3,12 +3,19 @@ package com.egabi.university.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * 404 Not Found — the requested resource could not be found.
- * Example: Trying to access a course that does not exist.
+ * Exception thrown when a requested resource is not found.
+ * Maps to HTTP 404 Not Found.
  */
 public class NotFoundException extends ApiException {
+    
     private final String errorCode;
     
+    /**
+     * Constructs a new NotFoundException with the specified message and error code.
+     *
+     * @param message   detailed message
+     * @param errorCode custom error code
+     */
     public NotFoundException(String message, String errorCode) {
         super(message);
         this.errorCode = errorCode;
@@ -21,6 +28,6 @@ public class NotFoundException extends ApiException {
     
     @Override
     public String getErrorCode() {
-        return this.errorCode;
+        return errorCode;
     }
 }

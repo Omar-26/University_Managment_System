@@ -11,29 +11,45 @@ import java.util.List;
 
 import static com.egabi.university.util.ApiPaths.DEPARTMENTS;
 
+/**
+ * REST Controller for managing departments.
+ * Handles HTTP requests related to Department CRUD actions.
+ * Provides endpoints to create, read, update, and delete departments.
+ */
 @RestController
 @RequestMapping(DEPARTMENTS)
 @RequiredArgsConstructor
 public class DepartmentController {
-    // This class will handle HTTP requests related to departments such as:
-    // - Get all departments
-    // - Get department by ID
-    // - Create a new department
-    // - Update an existing department
-    // - Delete a department
     
     private final DepartmentService departmentService;
     
+    /**
+     * Retrieves all departments.
+     *
+     * @return List of DepartmentDTO
+     */
     @GetMapping
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
         return ResponseEntity.ok(departmentService.getAllDepartments());
     }
     
-    @GetMapping("/{id}")
+    /**
+     * Retrieves a department by its ID.
+     *
+     * @param departmentId the ID of the department
+     * @return DepartmentDTO
+     */
+    @GetMapping("/{departmentId}")
     public ResponseEntity<DepartmentDTO> getDepartmentById(@PathVariable Long departmentId) {
         return ResponseEntity.ok(departmentService.getDepartmentById(departmentId));
     }
     
+    /**
+     * Creates a new department.
+     *
+     * @param departmentDTO the DepartmentDTO containing the details of the department to create
+     * @return ResponseEntity with the created DepartmentDTO and location URI
+     */
     @PostMapping
     public ResponseEntity<DepartmentDTO> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
         DepartmentDTO createdDepartment = departmentService.createDepartment(departmentDTO);
@@ -41,17 +57,28 @@ public class DepartmentController {
         return ResponseEntity.created(location).body(createdDepartment);
     }
     
+    /**
+     * Updates an existing department.
+     *
+     * @param departmentId  the ID of the department to update
+     * @param departmentDTO the DepartmentDTO containing the updated details
+     * @return ResponseEntity with the updated DepartmentDTO
+     */
     @PutMapping("/{departmentId}")
     public ResponseEntity<DepartmentDTO> updateDepartment(@PathVariable Long departmentId, @RequestBody DepartmentDTO departmentDTO) {
         DepartmentDTO updatedDepartment = departmentService.updateDepartment(departmentId, departmentDTO);
         return ResponseEntity.ok(updatedDepartment);
     }
     
+    /**
+     * Deletes a department by its ID.
+     *
+     * @param departmentId the ID of the department to delete
+     * @return ResponseEntity with no content status
+     */
     @DeleteMapping("/{departmentId}")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long departmentId) {
         departmentService.deleteDepartment(departmentId);
         return ResponseEntity.noContent().build();
     }
-    
-    
 }

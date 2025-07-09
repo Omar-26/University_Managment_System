@@ -2,8 +2,6 @@ package com.egabi.university.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,8 +30,7 @@ public class Student {
     private String gender;
     
     @ManyToOne
-    @JoinColumn(name = "department_id")
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
     
     @ManyToOne

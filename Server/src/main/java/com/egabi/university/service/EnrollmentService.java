@@ -62,14 +62,6 @@ public interface EnrollmentService {
      * @return a list of EnrollmentDTO objects for the specified course
      */
     List<EnrollmentDTO> getEnrollmentsByCourseId(String courseCode);
-    
-    /**
-     * Get all enrollments for a specific faculty.
-     *
-     * @param facultyId the ID of the faculty
-     * @return a list of EnrollmentDTO objects for the specified faculty
-     */
-    List<EnrollmentDTO> getEnrollmentsByFacultyId(Long facultyId);
 }
 
 

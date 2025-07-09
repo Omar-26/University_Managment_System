@@ -3,12 +3,16 @@ package com.egabi.university.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * 401 Unauthorized — authentication failed.
- * Example: Missing or invalid token.
+ * Exception thrown when authentication is required but missing or invalid.
+ * Maps to HTTP 401 Unauthorized.
  */
 public class UnauthorizedException extends ApiException {
-    public UnauthorizedException(String message) {
+    
+    private final String errorCode;
+    
+    public UnauthorizedException(String message, String errorCode) {
         super(message);
+        this.errorCode = errorCode;
     }
     
     @Override
@@ -18,6 +22,6 @@ public class UnauthorizedException extends ApiException {
     
     @Override
     public String getErrorCode() {
-        return "UNAUTHORIZED";
+        return errorCode;
     }
 }

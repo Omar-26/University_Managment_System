@@ -6,15 +6,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Repository for Course entity.
+ * Provides CRUD operations and custom queries for Course.
+ */
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
+    
+    /**
+     * Finds all courses with their associated department and level.
+     * Uses EntityGraph to optimize fetching related entities.
+     *
+     * @return List of all courses with department and level
+     */
     @EntityGraph(attributePaths = {"department", "level"})
-//    @SuppressWarnings("override")
     List<Course> findAll();
-    
-    boolean existsByCodeIgnoreCase(String code);
-    
-    Optional<Course> findByCodeIgnoreCase(String code);
 }

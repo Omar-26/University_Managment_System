@@ -4,10 +4,6 @@ import com.egabi.university.entity.*;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 
-
-/**
- * Centralized validation service for checking entity existence and referential integrity.
- */
 public interface ValidationService {
     
     // ============================
@@ -26,15 +22,20 @@ public interface ValidationService {
     
     /**
      * Asserts the existence of a faculty based on the provided ID.
-     * If shouldExist is true and the faculty does not exist, throws a NotFoundException.
-     * If shouldExist is false and the faculty exists, throws a ConflictException.
      *
-     * @param facultyId   the ID of the faculty to check
-     * @param shouldExist whether the faculty should exist or not
+     * @param facultyId the ID of the faculty to check
      * @throws NotFoundException if the faculty does not exist when it should
-     * @throws ConflictException if the faculty exists when it should not
      */
-    void assertFacultyExists(Long facultyId, boolean shouldExist);
+    void assertFacultyExists(Long facultyId);
+    
+    /**
+     * Validates that a faculty name is unique.
+     * If not, throws a ConflictException.
+     *
+     * @param facultyName the name to validate
+     * @throws ConflictException if the faculty name already exists
+     */
+    void assertFacultyNameUnique(String facultyName);
     
     // ============================
     // Level
@@ -52,15 +53,21 @@ public interface ValidationService {
     
     /**
      * Asserts the existence of a level based on the provided ID.
-     * If shouldExist is true and the level does not exist, throws a NotFoundException.
-     * If shouldExist is false and the level exists, throws a ConflictException.
      *
-     * @param levelId     the ID of the level to check
-     * @param shouldExist whether the level should exist or not
+     * @param levelId the ID of the level to check
      * @throws NotFoundException if the level does not exist when it should
-     * @throws ConflictException if the level exists when it should not
      */
-    void assertLevelExists(Long levelId, boolean shouldExist);
+    void assertLevelExists(Long levelId);
+    
+    /**
+     * Validates that a level name is unique.
+     * If not, throws a ConflictException.
+     *
+     * @param levelName the name to validate
+     * @param facultyId the ID of the faculty to which the level belongs
+     * @throws ConflictException if the level name already exists
+     */
+    void assertLevelNameUniquePerFaculty(String levelName, Long facultyId);
     
     // ============================
     // Department
@@ -78,15 +85,20 @@ public interface ValidationService {
     
     /**
      * Asserts the existence of a department based on the provided ID.
-     * If shouldExist is true and the department does not exist, throws a NotFoundException.
-     * If shouldExist is false and the department exists, throws a ConflictException.
      *
      * @param departmentId the ID of the department to check
-     * @param shouldExist  whether the department should exist or not
      * @throws NotFoundException if the department does not exist when it should
-     * @throws ConflictException if the department exists when it should not
      */
-    void assertDepartmentExists(Long departmentId, boolean shouldExist);
+    void assertDepartmentExists(Long departmentId);
+    
+    /**
+     * Validates that a department name is unique.
+     * If not, throws a ConflictException.
+     *
+     * @param departmentName the name to validate
+     * @throws ConflictException if the department name already exists
+     */
+    void assertDepartmentNameUnique(String departmentName);
     
     // ============================
     // Student
@@ -104,15 +116,12 @@ public interface ValidationService {
     
     /**
      * Asserts the existence of a student based on the provided ID.
-     * If shouldExist is true and the student does not exist, throws a NotFoundException.
-     * If shouldExist is false and the student exists, throws a ConflictException.
      *
-     * @param studentId   the ID of the student to check
-     * @param shouldExist whether the student should exist or not
+     * @param studentId the ID of the student to check
      * @throws NotFoundException if the student does not exist when it should
      * @throws ConflictException if the student exists when it should not
      */
-    void assertStudentExists(Long studentId, boolean shouldExist);
+    void assertStudentExists(Long studentId);
     
     // ============================
     // Course
@@ -156,15 +165,11 @@ public interface ValidationService {
     
     /**
      * Asserts the existence of an instructor based on the provided ID.
-     * If shouldExist is true and the instructor does not exist, throws a NotFoundException.
-     * If shouldExist is false and the instructor exists, throws a ConflictException.
      *
      * @param instructorId the ID of the instructor to check
-     * @param shouldExist  whether the instructor should exist or not
      * @throws NotFoundException if the instructor does not exist when it should
-     * @throws ConflictException if the instructor exists when it should not
      */
-    void assertInstructorExists(Long instructorId, boolean shouldExist);
+    void assertInstructorExists(Long instructorId);
     
     // ============================
     // Enrollment

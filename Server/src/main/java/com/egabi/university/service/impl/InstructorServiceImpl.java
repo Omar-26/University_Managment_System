@@ -2,43 +2,58 @@ package com.egabi.university.service.impl;
 
 import com.egabi.university.dto.InstructorDTO;
 import com.egabi.university.entity.Course;
+import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Instructor;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.InstructorMapper;
-import com.egabi.university.repository.CourseRepository;
-import com.egabi.university.repository.DepartmentRepository;
 import com.egabi.university.repository.InstructorRepository;
 import com.egabi.university.service.InstructorService;
+import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Default implementation of {@link InstructorService}.
+ * Provides CRUD operations for managing instructors.
+ */
 @Service
 @RequiredArgsConstructor
 public class InstructorServiceImpl implements InstructorService {
     
     private final InstructorRepository instructorRepository;
-    private final CourseRepository courseRepository;
-    private final DepartmentRepository departmentRepository;
     private final InstructorMapper instructorMapper;
+    private final ValidationService validationService;
     
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public List<InstructorDTO> getAllInstructors() {
         List<Instructor> instructors = instructorRepository.findAll();
         return instructorMapper.toDTOs(instructors);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public InstructorDTO getInstructorById(Long instructorId) {
-        Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new NotFoundException("Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND"));
+        Instructor instructor = validationService.getInstructorByIdOrThrow(instructorId);
         return instructorMapper.toDTO(instructor);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public InstructorDTO createInstructor(InstructorDTO instructorDTO) {
         // Map the DTO to the entity
         Instructor instructor = instructorMapper.toEntity(instructorDTO);
@@ -50,51 +65,71 @@ public class InstructorServiceImpl implements InstructorService {
         return instructorMapper.toDTO(instructor);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public InstructorDTO updateInstructor(Long instructorId, InstructorDTO instructorDTO) {
         // Check if the instructor exists
-        if (!instructorRepository.existsById(instructorId))
-            throw new NotFoundException("Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND");
+        Instructor instructor = validationService.getInstructorByIdOrThrow(instructorId);
         
         // Map the DTO to the entity
-        Instructor updatedInstructor = instructorMapper.toEntity(instructorDTO);
+        instructorMapper.updateInstructorFromDto(instructorDTO, instructor);
+        instructor.setId(instructorId);
         
         // Validate department - courses and update instructor
-        updatedInstructor = validateAndSaveInstructor(updatedInstructor);
+        instructor = validateAndSaveInstructor(instructor);
         
         // Return the updated instructor as a DTO
-        return instructorMapper.toDTO(updatedInstructor);
+        return instructorMapper.toDTO(instructor);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public void deleteInstructor(Long instructorId) {
         // Check if the instructor exists
-        Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new NotFoundException("Instructor with id " + instructorId + " not found", "INSTRUCTOR_NOT_FOUND"));
+        Instructor instructor = validationService.getInstructorByIdOrThrow(instructorId);
         
         // Check if the instructor is assigned to any courses and remove from those courses
-        List<Course> courses = instructor.getCourses();
-        if (courses != null && !courses.isEmpty())
-            courses.forEach(course -> course.getInstructors().remove(instructor));
+        if (instructor.getCourses() != null && !instructor.getCourses().isEmpty())
+            instructor.getCourses().forEach(course -> course.getInstructors().remove(instructor));
         
         // Delete the instructor
         instructorRepository.deleteById(instructorId);
     }
     
+    
+    // ================================================================
+    // Helper methods
+    // ================================================================
+    
+    /**
+     * Validates the instructor's department and courses, and saves the instructor.
+     *
+     * @param instructor The instructor to validate and save.
+     * @return The saved instructor.
+     * @throws NotFoundException if the department is not found.
+     */
     private Instructor validateAndSaveInstructor(Instructor instructor) {
         // Validate department
-        Optional.ofNullable(instructor.getDepartment())
+        //1. ensure that the department is set
+        Long departmentId = Optional.ofNullable(instructor.getDepartment()).map(Department::getId)
                 .orElseThrow(() -> new NotFoundException("Instructor must be in a department", "DEPARTMENT_NOT_FOUND"));
-        if (!departmentRepository.existsById(instructor.getDepartment().getId()))
-            throw new NotFoundException("Department with id " + instructor.getDepartment().getId() + " not found", "DEPARTMENT_NOT_FOUND");
+        
+        // 2. ensure that the department exists
+        Department department = validationService.getDepartmentByIdOrThrow(departmentId);
+        instructor.setDepartment(department);
         
         // Validate courses
         List<Course> instructorCourses = instructor.getCourses();
         if (instructorCourses != null) {
             for (Course course : instructorCourses) {
                 // Check if the course exists
-                if (!courseRepository.existsById(course.getCode()))
-                    throw new NotFoundException("Course with code " + course.getCode() + " not found", "COURSE_NOT_FOUND");
+                validationService.assertCourseExists(course.getCode(), true);
                 
                 // Ensure the course is not already assigned to the instructor
                 if (!course.getInstructors().contains(instructor))

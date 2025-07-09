@@ -3,10 +3,11 @@ package com.egabi.university.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * 409 Conflict — request causes a conflict.
- * Example: Trying to insert a duplicate course code.
+ * Exception thrown when a conflict occurs (e.g., duplicate key).
+ * Maps to HTTP 409 Conflict.
  */
 public class ConflictException extends ApiException {
+    
     private final String errorCode;
     
     public ConflictException(String message, String errorCode) {
@@ -21,6 +22,6 @@ public class ConflictException extends ApiException {
     
     @Override
     public String getErrorCode() {
-        return this.errorCode;
+        return errorCode;
     }
 }

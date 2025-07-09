@@ -1,10 +1,19 @@
 package com.egabi.university.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object for Student Entity.
+ * Used to transfer student data between layers.
+ */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class StudentDTO {
     private Long id;
     private String firstName;

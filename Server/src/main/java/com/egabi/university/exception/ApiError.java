@@ -2,16 +2,45 @@ package com.egabi.university.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a standardized API error response.
+ * Contains HTTP status, error message, timestamp, path, and custom error code.
+ */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApiError {
-    private LocalDateTime timestamp;
+    /**
+     * HTTP status code.
+     */
     private int status;
-    private String error;       // HTTP status reason, e.g., "Not Found"
-    private String message;     // human message, e.g., "Course with code X not found"
-    private String path;        // the request path
-    private String errorCode;   // your custom code, e.g., COURSE_NOT_FOUND
+    
+    /**
+     * Short description of the error.
+     */
+    private String error;
+    
+    /**
+     * Detailed error message.
+     */
+    private String message;
+    
+    /**
+     * Request path that caused the error.
+     */
+    private String path;
+    
+    /**
+     * Application-specific error code for identifying the error type.
+     */
+    private String errorCode;
+    
+    /**
+     * Time when the error occurred.
+     */
+    private LocalDateTime timestamp = LocalDateTime.now();
 }

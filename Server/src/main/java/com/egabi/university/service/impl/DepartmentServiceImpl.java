@@ -3,6 +3,7 @@ package com.egabi.university.service.impl;
 import com.egabi.university.dto.DepartmentDTO;
 import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Faculty;
+import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.DepartmentMapper;
 import com.egabi.university.repository.DepartmentRepository;
@@ -10,10 +11,15 @@ import com.egabi.university.service.DepartmentService;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Default implementation of {@link DepartmentService}.
+ * Provides CRUD operations for managing departments.
+ */
 @Service
 @RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
@@ -22,24 +28,34 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentMapper departmentMapper;
     private final ValidationService validationService;
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public List<DepartmentDTO> getAllDepartments() {
         List<Department> departments = departmentRepository.findAll();
         return departmentMapper.toDTOs(departments);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public DepartmentDTO getDepartmentById(Long id) {
-        Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Department with id " + id + " not found", "DEPARTMENT_NOT_FOUND"));
+    @Transactional
+    public DepartmentDTO getDepartmentById(Long departmentId) {
+        Department department = validationService.getDepartmentByIdOrThrow(departmentId);
         return departmentMapper.toDTO(department);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public DepartmentDTO createDepartment(DepartmentDTO departmentDTO) {
         // Check if the department already exists
-        if (departmentRepository.existsByNameIgnoreCase(((departmentDTO.getName()))))
-            throw new NotFoundException("Department with name " + departmentDTO.getName() + " already exists", "DEPARTMENT_EXISTS");
+        validationService.assertDepartmentNameUnique(departmentDTO.getName());
         
         // Map the DTO to the entity
         Department department = departmentMapper.toEntity(departmentDTO);
@@ -47,14 +63,20 @@ public class DepartmentServiceImpl implements DepartmentService {
         // Validate faculty and save the department
         department = validateAndSaveDepartment(department);
         
+        // Return the created department DTO
         return departmentMapper.toDTO(department);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Transactional
     public DepartmentDTO updateDepartment(Long departmentId, DepartmentDTO departmentDTO) {
         // Check if the department exists
-        if (!departmentRepository.existsById(departmentId))
-            throw new NotFoundException("Department with id " + departmentId + " not found", "DEPARTMENT_NOT_FOUND");
+        validationService.assertDepartmentExists(departmentId);
+        // Check if the department name is unique
+        validationService.assertDepartmentNameUnique(departmentDTO.getName());
         
         // Map the DTO to the entity
         Department updatedDepartment = departmentMapper.toEntity(departmentDTO);
@@ -63,28 +85,48 @@ public class DepartmentServiceImpl implements DepartmentService {
         // Validate faculty and save the updated department
         updatedDepartment = validateAndSaveDepartment(updatedDepartment);
         
+        // Return the updated department DTO
         return departmentMapper.toDTO(updatedDepartment);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void deleteDepartment(Long id) {
+    @Transactional
+    public void deleteDepartment(Long departmentId) {
         // Check if the department exists
-        if (!departmentRepository.existsById(id))
-            throw new NotFoundException("Department with id " + id + " not found", "DEPARTMENT_NOT_FOUND");
+        Department department = validationService.getDepartmentByIdOrThrow(departmentId);
         
-        //TODO Check that the department is not linked to any students or courses
+        // Check if the department has any associated courses or students
+        if (!department.getStudents().isEmpty() || !department.getCourses().isEmpty())
+            throw new ConflictException(
+                    "Cannot delete department with id " + departmentId + " because it has associated students or courses",
+                    "DEPARTMENT_HAS_ASSOCIATIONS");
         
         // Delete the department
-        departmentRepository.deleteById(id);
+        departmentRepository.deleteById(departmentId);
     }
     
+    // ================================================================
+    // Helper methods
+    // ================================================================
+    
+    /**
+     * Validates the department's faculty and saves the department.
+     *
+     * @param department The department to validate and save.
+     * @return The saved department.
+     * @throws NotFoundException if the faculty is not found.
+     */
     private Department validateAndSaveDepartment(Department department) {
-        // Validate faculty is set
-        var facultyId = Optional.ofNullable(department.getFaculty()).map(Faculty::getId)
+        // Validate faculty
+        // 1. Check if the faculty is set
+        Long facultyId = Optional.ofNullable(department.getFaculty()).map(Faculty::getId)
                 .orElseThrow(() -> new NotFoundException("Department must be in a faculty", "FACULTY_NOT_FOUND"));
         
-        // Validate faculty exists
-        var faculty = validationService.validateFacultyExists(facultyId);
+        // 2. Check if the faculty exists
+        Faculty faculty = validationService.getFacultyByIdOrThrow(facultyId);
         department.setFaculty(faculty);
         
         // Save the department

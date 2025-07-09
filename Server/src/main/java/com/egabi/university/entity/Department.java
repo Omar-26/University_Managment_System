@@ -22,8 +22,10 @@ public class Department {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Faculty faculty;
     
-    @OneToMany
-    @JoinColumn(name = "department_id")
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToMany(mappedBy = "department")
     private List<Student> students;
+    
+    @OneToMany(mappedBy = "department")
+    private List<Course> courses;
+    
 }
