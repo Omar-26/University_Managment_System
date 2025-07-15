@@ -1,1 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
+// Themes
+@import "primeng/resources/themes/lara-dark-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+@import "./styles/utilities";
+
+html,
+body,
+p,
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+app-root {
+  height: 100%;
+  background-color: var(--surface-ground);
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(255, 255, 255, 0.02) 25%,
+      rgba(255, 255, 255, 0.02) 26%,
+      transparent 27%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(255, 255, 255, 0.02) 25%,
+      rgba(255, 255, 255, 0.02) 26%,
+      transparent 27%
+    );
+  background-size: 50px 50px;
+  background-position: 0 0, 0 0;
+}
+.page-content {
+  padding-top: var(--header-size);
+  min-height: calc(100vh - var(--header-size));
+}
+
+// Variable	                Description
+// --text-color	            Font text color.
+// --text-secondary-color	Muted font text color with a secondary level.
+// --primary-color	        Primary color of the theme.
+// --primary-color-text	    Text color when background is primary color.
+// --font-family	        Font family of the theme.
+// --inline-spacing	        Spacing between to adjacent items.
+// --border-radius	        Common border radius of elements.
+// --focus-ring	            Box shadow of a focused element.
+// --mask-bg	            Background of an overlay mask.
+// --highlight-bg	        Background of a highlighted element.
+// --highlight-text-color	Text color of a highlighted element.
+
+// Variable	                Description
+// --surface-ground	        Base ground color.
+// --surface-section	    Background color of a section on a ground surface.
+// --surface-card	        Color of a surface used as a card.
+// --surface-overlay	    Color of overlay surfaces.
+// --surface-border	        Color of a divider.
+// --surface-hover	        Color of an element in hover state.

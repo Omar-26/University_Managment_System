@@ -1,0 +1,150 @@
+<app-section-head
+  title="Department Courses"
+  showBtnPath="/courses"
+  addBtnPath="/courses/add"
+  addBtnText="Course"
+></app-section-head>
+
+<div class="section-body flex flex-row">
+  <div class="card-section">
+    <div class="card">
+      <p-dataView
+        #dv
+        [value]="courses"
+        [rows]="5"
+        [paginator]="true"
+        styleClass="dataview"
+      >
+        <ng-template pTemplate="list" let-courses>
+          <div class="grid grid-nogutter">
+            <div
+              class="col-12"
+              *ngFor="let course of courses; let first = first"
+            >
+              <div
+                class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3"
+                [ngClass]="{ 'border-top-1 surface-border': !first }"
+              >
+                <!-- right : image -->
+                <div class="md:w-10rem relative ml-2">
+                  <img
+                    class="block xl:block mx-auto border-round w-full"
+                    [src]="
+                      'https://primefaces.org/cdn/primeng/images/card-ng.jpg'
+                    "
+                    [alt]="course.name"
+                    height="100"
+                    width="100"
+                    style="border-radius: 2rem"
+                  />
+                  <!-- <p-tag
+                  [value]="item.inventoryStatus"
+                  [severity]="getSeverity(item)"
+                  class="absolute"
+                  [style.left.px]="4"
+                  [style.top.px]="4"
+                /> -->
+                </div>
+
+                <!-- left: title and buttons -->
+                <div
+                  class="flex flex-row md:flex-row md:align-items-center flex-1 gap-4 w-full"
+                >
+                  <!-- left : title-->
+                  <div
+                    class="flex flex-row md:flex-column justify-between items-center ml-2"
+                    style="flex: 1"
+                  >
+                    <div class="flex flex-col gap-2">
+                      <!-- subTitle -->
+                      <span class="subTitle">{{ course.code }}</span>
+                      <!-- title -->
+                      <div class="title">{{ course.name }}</div>
+                    </div>
+
+                    <!-- icon -->
+                    <!-- <div class="surface-100 p-1" style="border-radius: 30px">
+                      <div
+                        class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2"
+                        style="
+                          border-radius: 30px;
+                          box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04),
+                            0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+                        "
+                      >
+                        <span class="text-900 font-medium text-sm">{{
+                          course.levelId
+                        }}</span>
+                        <i class="pi pi-star-fill text-yellow-500"></i>
+                      </div>
+                    </div> -->
+                  </div>
+
+                  <!-- right : buttons -->
+                  <div class="flex flex-row gap-4 items-center mr-4">
+                    <p-button
+                      label="View Details"
+                      icon="pi pi-eye"
+                      [outlined]="true"
+                      (onClick)="onCourseSelect(course)"
+                    />
+                    <p-button
+                      label="Enroll Now"
+                      icon="pi pi-pencil"
+                      class="white-space-nowrap"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </div>
+  </div>
+
+  <div class="details-section">
+    <div class="details">
+      <div class="details-header">
+        <h2>Course Details</h2>
+      </div>
+      <p *ngIf="!selectedCourse" class="no-selection-text">
+        Select a course to view detailed information.
+      </p>
+      <div *ngIf="selectedCourse" class="course-info">
+        <div class="info-item">
+          <span class="info-label">Course Code</span>
+          <span class="info-value">{{ selectedCourse.code }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Course Name</span>
+          <span class="info-value">{{ selectedCourse.name }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Level</span>
+          <span class="info-value">{{ selectedCourse.levelId }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Credits</span>
+          <span class="info-value">{{ selectedCourse.credits }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Description</span>
+          <span
+            class="info-value"
+            style="
+              font-size: 0.9rem;
+              font-weight: 400;
+              line-height: 1.5rem;
+              white-space: post-line;
+            "
+            >Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis
+            quasi quibusdam soluta odit illum, incidunt error fugiat perferendis
+            harum. Amet labore ex reprehenderit neque officiis sapiente
+            voluptate vero architecto nesciunt?</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

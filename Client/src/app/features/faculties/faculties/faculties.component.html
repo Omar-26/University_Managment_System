@@ -1,0 +1,19 @@
+<div class="content">
+  <app-section-head
+    title="Faculties"
+    showBtnPath="/faculties"
+    addBtnPath="/faculties/add"
+    addBtnText="Faculty"
+  ></app-section-head>
+
+  <div class="card-grid">
+    <app-card
+      *ngFor="let faculty of faculties"
+      [title]="faculty.name"
+      [subTitle]="(faculty.numOfDepartments || 0) + ' Department(s)'"
+      [id]="faculty.id"
+      [routePath]="'/faculties'"
+    >
+    </app-card>
+  </div>
+</div>

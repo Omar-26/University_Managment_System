@@ -38,6 +38,33 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.toDTOs(courses);
     }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public List<CourseDTO> getAllCoursesByDepartmentId(Long departmentId) {
+        // Validate department existence
+        validationService.assertDepartmentExists(departmentId);
+        
+        // Fetch courses by department ID
+        List<Course> courses = courseRepository.findAllByDepartmentId(departmentId);
+        return courseMapper.toDTOs(courses);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long countAllCoursesByDepartmentId(Long departmentId) {
+        // Validate department existence
+        validationService.assertDepartmentExists(departmentId);
+        
+        // Count courses by department ID
+        return courseRepository.countAllByDepartmentId(departmentId);
+    }
+    
     /**
      * {@inheritDoc}
      */

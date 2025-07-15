@@ -1,0 +1,14 @@
+::ng-deep p-galleria {
+  width: 100%;
+}
+
+::ng-deep .hero-image {
+  width: 100%;
+  height: 80vh;
+  object-fit: cover;
+}
+
+.indicator {
+  color: white;
+  font-weight: bold;
+}

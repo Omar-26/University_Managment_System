@@ -1,0 +1,8 @@
+.section-head {
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+  padding: calc(var(--inline-spacing) * 4) calc(var(--inline-spacing) * 6);
+}

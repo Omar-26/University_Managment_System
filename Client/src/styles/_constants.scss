@@ -1,0 +1,67 @@
+/* ===============================
+   🎨 COLORS
+================================= */
+
+$primary-color: #ffbc3b;
+$secondary-color: #1a1a37;
+$text-color: #5c5c77;
+$text-color-light: #8585a4;
+$text-color-dark: #1e1e4b;
+$body-color: #fff;
+$border-color: #ededf1;
+$black: #000;
+$white: #fff;
+$light: #f8f9fe;
+$gray: #f8f8f8;
+
+// Font Variables
+$primary-font: "Poppins", sans-serif;
+$secondary-font: "Montserrat", sans-serif;
+$icon-font: "themify";
+
+/* ===============================
+   🎨 TEXT COLORS
+================================= */
+
+$text-color: #212529;
+$text-light: #ffffff;
+$text-muted: #6c757d;
+
+/* ===============================
+   🖋️ TYPOGRAPHY
+================================= */
+
+$font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-size-base: 1rem; // 16px
+$font-size-sm: 0.875rem; // 14px
+$font-size-lg: 1.25rem; // 20px
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+/* ===============================
+   📏 SPACING SCALE
+================================= */
+
+$spacing-unit: 0.25rem; // 4px
+
+/* Example: use $spacing-unit * 2 for 0.5rem (8px) etc */
+
+/* ===============================
+   📱 BREAKPOINTS
+================================= */
+
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+/* ===============================
+   🧩 SHADOWS & RADIUS
+================================= */
+
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+
+$box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$box-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);

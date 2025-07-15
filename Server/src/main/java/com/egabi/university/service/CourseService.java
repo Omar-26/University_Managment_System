@@ -12,6 +12,23 @@ public interface CourseService {
      */
     List<CourseDTO> getAllCourses();
     
+    
+    /**
+     * Get all courses by department ID.
+     *
+     * @param departmentId the ID of the department
+     * @return a list of CourseDTO objects associated with the specified department
+     */
+    List<CourseDTO> getAllCoursesByDepartmentId(Long departmentId);
+    
+    /**
+     * Count all courses by department ID.
+     *
+     * @param departmentId the ID of the department
+     * @return the count of courses associated with the specified department
+     */
+    Long countAllCoursesByDepartmentId(Long departmentId);
+    
     /**
      * Get Course by code.
      *

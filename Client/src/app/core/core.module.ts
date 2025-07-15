@@ -1,9 +1,11 @@
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 
 @NgModule({
-  providers: [
-    // Interceptors or global services can go here, or use providedIn: 'root'
-  ],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

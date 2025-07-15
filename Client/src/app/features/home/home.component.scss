@@ -1,0 +1,34 @@
+.hero-gallery {
+  position: relative;
+  width: 100vw;
+  overflow: hidden;
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .hero-content {
+    color: #fff;
+    max-width: 800px;
+    padding: 2rem;
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+  }
+}

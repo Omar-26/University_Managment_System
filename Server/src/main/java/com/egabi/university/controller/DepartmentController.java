@@ -1,6 +1,8 @@
 package com.egabi.university.controller;
 
+import com.egabi.university.dto.CourseDTO;
 import com.egabi.university.dto.DepartmentDTO;
+import com.egabi.university.service.CourseService;
 import com.egabi.university.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import static com.egabi.university.util.ApiPaths.DEPARTMENTS;
 public class DepartmentController {
     
     private final DepartmentService departmentService;
+    private final CourseService courseService;
     
     /**
      * Retrieves all departments.
@@ -31,6 +34,28 @@ public class DepartmentController {
     @GetMapping
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
         return ResponseEntity.ok(departmentService.getAllDepartments());
+    }
+    
+    /**
+     * Retrieves all courses associated with a specific department.
+     *
+     * @param departmentId the ID of the department
+     * @return List of CourseDTO associated with the specified department
+     */
+    @GetMapping("/{departmentId}/courses")
+    public ResponseEntity<List<CourseDTO>> getCoursesByDepartmentId(@PathVariable Long departmentId) {
+        return ResponseEntity.ok(courseService.getAllCoursesByDepartmentId(departmentId));
+    }
+    
+    /**
+     * Counts all courses associated with a specific department.
+     *
+     * @param departmentId the ID of the department
+     * @return Count of courses associated with the specified department
+     */
+    @GetMapping("/{departmentId}/courses/count")
+    public ResponseEntity<Long> countCoursesByDepartmentId(@PathVariable Long departmentId) {
+        return ResponseEntity.ok(courseService.countAllCoursesByDepartmentId(departmentId));
     }
     
     /**

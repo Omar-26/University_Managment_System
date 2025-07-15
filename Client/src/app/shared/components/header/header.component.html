@@ -1,0 +1,53 @@
+<header class="site-header">
+  <div class="header-container">
+    <!-- Left: Logo -->
+    <div class="header-left">
+      <a
+        routerLink="/"
+        class="flex felx-row align-items-center justify-content-center"
+      >
+        <!-- <img src="./../../../../assets/img/OA_logo.png" class="logo" /> -->
+        <span class="text">UMS</span>
+      </a>
+    </div>
+
+    <!-- Center: Navigation -->
+    <nav class="header-center">
+      <ul>
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Home
+          </a>
+        </li>
+        <li>
+          <a routerLink="/faculties" routerLinkActive="active"> Faculties </a>
+        </li>
+        <li>
+          <a routerLink="/about" routerLinkActive="active"> About </a>
+        </li>
+        <li>
+          <a routerLink="/contact" routerLinkActive="active"> Contact </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Right: Auth buttons -->
+    <div class="header-right flex gap-4">
+      <p-button
+        label="Log in"
+        [outlined]="true"
+        [rounded]="true"
+        styleClass="w-full"
+      ></p-button>
+      <p-button
+        label="Register"
+        [rounded]="true"
+        styleClass="w-full"
+      ></p-button>
+    </div>
+  </div>
+</header>

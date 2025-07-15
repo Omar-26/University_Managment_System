@@ -1,0 +1,19 @@
+<div class="content">
+  <app-section-head
+    title="Department"
+    showBtnPath="/departments"
+    addBtnPath="/departments/add"
+    addBtnText="Department"
+  ></app-section-head>
+
+  <div class="card-grid">
+    <app-card
+      *ngFor="let department of departments"
+      [title]="department.name"
+      [subTitle]="department.numOfCourses + ' Course(s)'"
+      [id]="department.id"
+      [routePath]="'/departments'"
+    >
+    </app-card>
+  </div>
+</div>

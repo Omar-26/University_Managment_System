@@ -1,0 +1,114 @@
+.section-body {
+  height: 93vh;
+  padding: 0 calc(var(--inline-spacing) * 4) calc(var(--inline-spacing) * 4)
+    calc(var(--inline-spacing) * 4);
+
+  .card-section {
+    flex: 0 0 70%;
+    width: 70%;
+
+    ::ng-deep .dataview {
+      .p-dataview-content {
+        border-radius: 2rem 2rem 0 0;
+        overflow: hidden;
+      }
+      .p-paginator {
+        border-radius: 0 0 2rem 2rem;
+      }
+      .subTitle {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .title {
+        color: var(--color-white);
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .details-section {
+    flex: 0 0 30%;
+    width: 30%;
+    padding: 0 1rem;
+
+    .details {
+      height: 100%;
+      background-color: var(--surface-card);
+      border-radius: 2rem;
+      padding: 2rem;
+
+      .details-header {
+        background-color: var(--surface-0);
+        border-radius: 2rem;
+        padding: 1.2rem;
+        border: 1px solid var(--surface-border);
+        margin-bottom: 1.5rem;
+        text-align: center;
+        h2 {
+          color: var(--primary-color);
+          font-size: 1.6rem;
+          font-weight: 600;
+        }
+      }
+
+      .no-selection-text {
+        color: var(--text-color-secondary);
+        font-style: italic;
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      .course-info {
+        height: 85%;
+        border-radius: 2rem;
+        padding: 3rem 1.5rem;
+        background-color: var(--surface-0);
+        border: 1px solid var(--surface-border);
+
+        .info-item {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 1.2rem;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .info-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-color-secondary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .info-value {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+
+    .card {
+      flex: none;
+      width: 100%;
+    }
+
+    .container {
+      flex: none;
+      width: 100%;
+    }
+  }
+}

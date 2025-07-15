@@ -33,6 +33,7 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
     
+    
     /**
      * Retrieves a course by its code.
      *

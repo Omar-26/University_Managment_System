@@ -1,0 +1,21 @@
+<div class="mb-4 p-8 flex justify-center">
+  <p-card [style]="{ width: '24rem', overflow: 'hidden' }">
+    <ng-template pTemplate="header">
+      <img
+        alt="Card"
+        class="w-full"
+        src="https://primefaces.org/cdn/primeng/images/card-ng.jpg"
+      />
+    </ng-template>
+
+    <ng-template pTemplate="title"> {{ title }} </ng-template>
+
+    <ng-template pTemplate="subtitle"> {{ subTitle }}</ng-template>
+
+    <p-button
+      (onClick)="navigateToDetails()"
+      label="Show More"
+      styleClass="w-full"
+    ></p-button>
+  </p-card>
+</div>

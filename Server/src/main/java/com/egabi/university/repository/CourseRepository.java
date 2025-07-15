@@ -22,4 +22,14 @@ public interface CourseRepository extends JpaRepository<Course, String> {
      */
     @EntityGraph(attributePaths = {"department", "level"})
     List<Course> findAll();
+    
+    /**
+     * Finds all courses associated with a specific department ID.
+     *
+     * @param departmentId the ID of the department
+     * @return List of courses associated with the specified department
+     */
+    List<Course> findAllByDepartmentId(Long departmentId);
+    
+    Long countAllByDepartmentId(Long departmentId);
 }

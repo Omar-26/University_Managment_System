@@ -1,0 +1,20 @@
+<div class="section-head">
+  <h1>{{ title }}</h1>
+  <div class="flex flex-row gap-4">
+    <p-button
+      label="Show All"
+      icon="pi pi-eye"
+      rounded="true"
+      size="small"
+      outlined="true"
+      [routerLink]="showBtnPath"
+    ></p-button>
+    <p-button
+      label="Add {{ addBtnText }}"
+      icon="pi pi-plus"
+      rounded="true"
+      size="small"
+      [routerLink]="addBtnPath"
+    ></p-button>
+  </div>
+</div>
