@@ -1,3 +1,4 @@
+<!-- In home.component.html -->
 <section class="hero-gallery">
   <app-gallery></app-gallery>
 
@@ -9,3 +10,21 @@
     </div>
   </div>
 </section>
+
+<section class="fun-facts section-sm bg-primary">
+  <div class="container">
+    <div class="row">
+      <div
+        #funFactItem
+        class="col-md-3 col-sm-6 mb-4 mb-md-0 fun-fact-item"
+        *ngFor="let fact of funFacts; let i = index"
+      >
+        <div class="text-center">
+          <h2 class="count text-white">{{ fact.count | number }}</h2>
+          <h5 class="text-white">{{ fact.label }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="container"><app-section-head></app-section-head></div>

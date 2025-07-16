@@ -29,6 +29,10 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final ValidationService validationService;
     
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * {@inheritDoc}
      */
@@ -101,6 +105,39 @@ public class StudentServiceImpl implements StudentService {
         
         // Delete the student
         studentRepository.deleteById(studentId);
+    }
+    
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public List<StudentDTO> getStudentsByFacultyId(Long facultyId) {
+        // Validate faculty existence
+        validationService.assertFacultyExists(facultyId);
+        
+        // Get all students in the faculty
+        List<Student> students = studentRepository.findAllByFacultyId(facultyId);
+        return studentMapper.toDTOs(students);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long countStudentsByFacultyId(Long facultyId) {
+        // Validate faculty existence
+        validationService.assertFacultyExists(facultyId);
+        
+        // Count students in the faculty
+        Long count = studentRepository.countByFacultyId(facultyId);
+        
+        return count != null ? count : 0L;
     }
     
     // ================================================================

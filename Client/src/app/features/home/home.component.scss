@@ -1,3 +1,5 @@
+@import "./../../../styles/bootstrap/bootstrap.min.css";
+
 .hero-gallery {
   position: relative;
   width: 100vw;
@@ -13,22 +15,52 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.6);
   }
 
   .hero-content {
-    color: #fff;
-    max-width: 800px;
+    max-width: 100vh;
     padding: 2rem;
 
     h1 {
-      font-size: 3rem;
+      color: var(--primary-color);
+      font-size: 3.5rem;
+      font-weight: bold;
       margin-bottom: 1rem;
     }
 
     p {
+      color: var(--color-white);
       font-size: 1.2rem;
       margin-bottom: 2rem;
     }
   }
+}
+
+// Add these animation styles
+.fun-fact-item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+
+  &.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Alternative keyframe animation
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fun-fact-item.animate-keyframes {
+  animation: fadeInUp 0.6s ease-out forwards;
 }

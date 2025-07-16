@@ -3,7 +3,6 @@ package com.egabi.university.service.impl;
 import com.egabi.university.dto.FacultyDTO;
 import com.egabi.university.entity.Faculty;
 import com.egabi.university.exception.ConflictException;
-import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.FacultyMapper;
 import com.egabi.university.repository.FacultyRepository;
 import com.egabi.university.service.FacultyService;
@@ -21,9 +20,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FacultyServiceImpl implements FacultyService {
+    
     private final FacultyRepository facultyRepository;
     private final FacultyMapper facultyMapper;
     private final ValidationService validationService;
+    
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
     
     /**
      * {@inheritDoc}
@@ -103,29 +107,5 @@ public class FacultyServiceImpl implements FacultyService {
         
         // Delete the faculty
         facultyRepository.delete(faculty);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public Long countDepartmentsByFacultyId(Long id) {
-        Faculty faculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Faculty with id " + id + " not found", "FACULTY_NOT_FOUND"));
-        
-        return (long) faculty.getDepartments().size();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public Long countStudentsByFacultyId(Long id) {
-        Faculty faculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Faculty with id " + id + " not found", "FACULTY_NOT_FOUND"));
-        
-        return faculty.getDepartments().stream().mapToLong(department -> department.getStudents().size()).sum();
     }
 }

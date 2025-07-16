@@ -23,5 +23,6 @@ public class InstructorDTO {
     private LocalDate dateOfBirth;
     private String gender;
     private Long departmentId;
+    private String departmentName;
     private List<String> courseCodes;
 }

@@ -22,5 +22,9 @@ public class StudentDTO {
     private LocalDate dateOfBirth;
     private String gender;
     private Long departmentId;
+    private String departmentName;
     private Long levelId;
+    private String levelName;
+    private Long facultyId;
+    private String facultyName;
 }

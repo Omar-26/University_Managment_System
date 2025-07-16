@@ -5,5 +5,5 @@ export interface DepartmentDTO {
 }
 
 export interface DepartmentWithCourses extends DepartmentDTO {
-  numOfCourses: number;
+  courseCount?: number;
 }

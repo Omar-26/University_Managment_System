@@ -24,7 +24,11 @@ public interface StudentMapper {
      */
     @Mappings({
             @Mapping(source = "department.id", target = "departmentId"),
-            @Mapping(source = "level.id", target = "levelId")
+            @Mapping(source = "level.id", target = "levelId"),
+            @Mapping(source = "department.name", target = "departmentName"),
+            @Mapping(source = "level.name", target = "levelName"),
+            @Mapping(source = "department.faculty.id", target = "facultyId"),
+            @Mapping(source = "department.faculty.name", target = "facultyName"),
     })
     StudentDTO toDTO(Student student);
     

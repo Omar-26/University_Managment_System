@@ -3,9 +3,10 @@
   [showIndicators]="true"
   [showThumbnails]="false"
   [showIndicatorsOnItem]="true"
-  indicatorsPosition="bottom"
+  indicatorsPosition="left"
   [responsiveOptions]="responsiveOptions"
   [containerStyle]="{ width: '100%' }"
+  [style]="{ width: '100%' }"
 >
   <ng-template pTemplate="item" let-item>
     <img [src]="item.itemImageSrc" [alt]="item.alt" class="hero-image" />

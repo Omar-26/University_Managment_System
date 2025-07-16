@@ -5,29 +5,16 @@ import com.egabi.university.dto.CourseDTO;
 import java.util.List;
 
 public interface CourseService {
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * Get all courses available in the system.
      *
      * @return a list of all courses as CourseDTO objects
      */
     List<CourseDTO> getAllCourses();
-    
-    
-    /**
-     * Get all courses by department ID.
-     *
-     * @param departmentId the ID of the department
-     * @return a list of CourseDTO objects associated with the specified department
-     */
-    List<CourseDTO> getAllCoursesByDepartmentId(Long departmentId);
-    
-    /**
-     * Count all courses by department ID.
-     *
-     * @param departmentId the ID of the department
-     * @return the count of courses associated with the specified department
-     */
-    Long countAllCoursesByDepartmentId(Long departmentId);
     
     /**
      * Get Course by code.
@@ -60,4 +47,25 @@ public interface CourseService {
      * @param code the code of the course to be deleted
      */
     void deleteCourse(String code);
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    /**
+     * Get all courses by department ID.
+     *
+     * @param departmentId the ID of the department
+     * @return a list of CourseDTO objects associated with the specified department
+     */
+    List<CourseDTO> getCoursesByDepartmentId(Long departmentId);
+    
+    /**
+     * Count all courses for a specific department.
+     *
+     * @param departmentId the ID of the department
+     * @return the count of courses associated with the specified department
+     */
+    Long countCoursesByDepartmentId(Long departmentId);
+    
 }

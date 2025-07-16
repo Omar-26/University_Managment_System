@@ -1,7 +1,11 @@
 package com.egabi.university.controller;
 
+import com.egabi.university.dto.DepartmentDTO;
 import com.egabi.university.dto.FacultyDTO;
+import com.egabi.university.dto.StudentDTO;
+import com.egabi.university.service.DepartmentService;
 import com.egabi.university.service.FacultyService;
+import com.egabi.university.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +24,14 @@ import static com.egabi.university.util.ApiPaths.FACULTIES;
 @RequestMapping(FACULTIES)
 @RequiredArgsConstructor
 public class FacultyController {
+    
     private final FacultyService facultyService;
+    private final DepartmentService departmentService;
+    private final StudentService studentService;
+    
+    // ================================================================
+    // CRUD Endpoints
+    // ================================================================
     
     /**
      * Retrieves all faculties.
@@ -28,7 +39,7 @@ public class FacultyController {
      * @return List of FacultyDTO
      */
     @GetMapping
-    public ResponseEntity<List<FacultyDTO>> getFaculties() {
+    public ResponseEntity<List<FacultyDTO>> getAllFaculties() {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
     
@@ -41,24 +52,6 @@ public class FacultyController {
     @GetMapping("/{facultyId}")
     public ResponseEntity<FacultyDTO> getFacultyById(@PathVariable Long facultyId) {
         return ResponseEntity.ok(facultyService.getFacultyById(facultyId));
-    }
-    
-    @GetMapping("/{facultyId}/departments/count")
-    public ResponseEntity<Long> countDepartmentsByFacultyId(@PathVariable Long facultyId) {
-        Long count = facultyService.countDepartmentsByFacultyId(facultyId);
-        return ResponseEntity.ok(count);
-    }
-    
-    /**
-     * Counts the number of students in a faculty by its ID.
-     *
-     * @param facultyId the ID of the faculty
-     * @return the count of students in the faculty
-     */
-    @GetMapping("/{facultyId}/students/count")
-    public ResponseEntity<Long> countStudentsByFacultyId(@PathVariable Long facultyId) {
-        Long count = facultyService.countStudentsByFacultyId(facultyId);
-        return ResponseEntity.ok(count);
     }
     
     /**
@@ -97,5 +90,57 @@ public class FacultyController {
     public ResponseEntity<Void> deleteFaculty(@PathVariable Long facultyId) {
         facultyService.deleteFaculty(facultyId);
         return ResponseEntity.noContent().build();
+    }
+    
+    // ================================================================
+    // Business Logic Endpoints
+    // ================================================================
+    
+    // Department-related endpoints
+    
+    /**
+     * Retrieves all departments associated with a faculty by its ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return List of DepartmentDTOs associated with the faculty
+     */
+    @GetMapping("/{facultyId}/departments")
+    public ResponseEntity<List<DepartmentDTO>> getDepartmentsByFacultyId(@PathVariable Long facultyId) {
+        return ResponseEntity.ok(departmentService.getDepartmentsByFacultyId(facultyId));
+    }
+    
+    /**
+     * Counts the number of departments in a faculty by its ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return List of DepartmentDTOs associated with the faculty
+     */
+    @GetMapping("/{facultyId}/departments/count")
+    public ResponseEntity<Long> countDepartmentsByFacultyId(@PathVariable Long facultyId) {
+        return ResponseEntity.ok(departmentService.countDepartmentsByFacultyId(facultyId));
+    }
+    
+    //Student-related endpoints
+    
+    /**
+     * Retrieves all students associated with a faculty by its ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return List of StudentDTOs associated with the faculty
+     */
+    @GetMapping("/{facultyId}/students")
+    public ResponseEntity<List<StudentDTO>> getStudentsByFacultyId(@PathVariable Long facultyId) {
+        return ResponseEntity.ok(studentService.getStudentsByFacultyId(facultyId));
+    }
+    
+    /**
+     * Counts the number of students in a faculty by its ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return the count of students in the faculty
+     */
+    @GetMapping("/{facultyId}/students/count")
+    public ResponseEntity<Long> countStudentsByFacultyId(@PathVariable Long facultyId) {
+        return ResponseEntity.ok(studentService.countStudentsByFacultyId(facultyId));
     }
 }

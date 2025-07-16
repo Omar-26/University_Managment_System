@@ -5,6 +5,11 @@ import com.egabi.university.dto.StudentDTO;
 import java.util.List;
 
 public interface StudentService {
+    
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * Get all students available in the system.
      *
@@ -43,4 +48,24 @@ public interface StudentService {
      * @param id the ID of the student to be deleted
      */
     void deleteStudent(Long id);
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    /**
+     * Get all students in a faculty by its ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return a list of StudentDTO objects associated with the specified faculty
+     */
+    List<StudentDTO> getStudentsByFacultyId(Long facultyId);
+    
+    /**
+     * Count the number of students in a faculty by its ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return the count of students in the specified faculty
+     */
+    Long countStudentsByFacultyId(Long facultyId);
 }

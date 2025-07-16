@@ -37,16 +37,44 @@
 
     <!-- Right: Auth buttons -->
     <div class="header-right flex gap-4">
+      <!-- Show login button when not logged in -->
       <p-button
+        *ngIf="!isLoggedIn"
         label="Log in"
         [outlined]="true"
         [rounded]="true"
         styleClass="w-full"
+        (onClick)="onLoginClick()"
       ></p-button>
+
+      <div class="flex flex-row items-center gap-2">
+        <!-- Show user button when logged in -->
+        <p-button
+          *ngIf="isLoggedIn"
+          [icon]="
+            currentUser.role === 'student'
+              ? 'pi pi-user'
+              : currentUser.role === 'instructor'
+              ? 'pi pi-users'
+              : 'pi pi-cog'
+          "
+          [rounded]="true"
+          (onClick)="onUserButtonClick()"
+          [title]="'Go to ' + currentUser.role + ' dashboard'"
+        ></p-button>
+        <!-- Optional: Show user info -->
+        <span *ngIf="isLoggedIn" class="user-info">
+          {{ currentUser.role }} #{{ currentUser.id }}
+        </span>
+      </div>
+      <!-- Optional: Logout button -->
       <p-button
-        label="Register"
+        *ngIf="isLoggedIn"
+        icon="pi pi-sign-out"
         [rounded]="true"
-        styleClass="w-full"
+        [outlined]="true"
+        (onClick)="logout()"
+        title="Logout"
       ></p-button>
     </div>
   </div>

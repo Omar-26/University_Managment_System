@@ -26,6 +26,10 @@ public class DepartmentController {
     private final DepartmentService departmentService;
     private final CourseService courseService;
     
+    // ================================================================
+    // CRUD Endpoints
+    // ================================================================
+    
     /**
      * Retrieves all departments.
      *
@@ -34,28 +38,6 @@ public class DepartmentController {
     @GetMapping
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
         return ResponseEntity.ok(departmentService.getAllDepartments());
-    }
-    
-    /**
-     * Retrieves all courses associated with a specific department.
-     *
-     * @param departmentId the ID of the department
-     * @return List of CourseDTO associated with the specified department
-     */
-    @GetMapping("/{departmentId}/courses")
-    public ResponseEntity<List<CourseDTO>> getCoursesByDepartmentId(@PathVariable Long departmentId) {
-        return ResponseEntity.ok(courseService.getAllCoursesByDepartmentId(departmentId));
-    }
-    
-    /**
-     * Counts all courses associated with a specific department.
-     *
-     * @param departmentId the ID of the department
-     * @return Count of courses associated with the specified department
-     */
-    @GetMapping("/{departmentId}/courses/count")
-    public ResponseEntity<Long> countCoursesByDepartmentId(@PathVariable Long departmentId) {
-        return ResponseEntity.ok(courseService.countAllCoursesByDepartmentId(departmentId));
     }
     
     /**
@@ -105,5 +87,31 @@ public class DepartmentController {
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long departmentId) {
         departmentService.deleteDepartment(departmentId);
         return ResponseEntity.noContent().build();
+    }
+    
+    // ================================================================
+    // Business Logic Endpoints
+    // ================================================================
+    
+    /**
+     * Retrieves all courses associated with a specific department.
+     *
+     * @param departmentId the ID of the department
+     * @return List of CourseDTO associated with the specified department
+     */
+    @GetMapping("/{departmentId}/courses")
+    public ResponseEntity<List<CourseDTO>> getCoursesByDepartmentId(@PathVariable Long departmentId) {
+        return ResponseEntity.ok(courseService.getCoursesByDepartmentId(departmentId));
+    }
+    
+    /**
+     * Counts all courses associated with a specific department.
+     *
+     * @param departmentId the ID of the department
+     * @return Count of courses associated with the specified department
+     */
+    @GetMapping("/{departmentId}/courses/count")
+    public ResponseEntity<Long> countCoursesByDepartmentId(@PathVariable Long departmentId) {
+        return ResponseEntity.ok(courseService.countCoursesByDepartmentId(departmentId));
     }
 }

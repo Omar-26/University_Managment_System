@@ -4,5 +4,5 @@ export interface FacultyDTO {
 }
 
 export interface FacultyWithDepartments extends FacultyDTO {
-  numOfDepartments?: number;
+  departmentCount?: number;
 }

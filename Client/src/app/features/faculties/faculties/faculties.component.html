@@ -10,7 +10,7 @@
     <app-card
       *ngFor="let faculty of faculties"
       [title]="faculty.name"
-      [subTitle]="(faculty.numOfDepartments || 0) + ' Department(s)'"
+      [subTitle]="(faculty.departmentCount || 0) + ' Department(s)'"
       [id]="faculty.id"
       [routePath]="'/faculties'"
     >

@@ -1,0 +1,326 @@
+<!-- In instructor.component.html -->
+<div class="instructor-container" *ngIf="!loading && instructor">
+  <!-- Header Section -->
+  <div class="instructor-header">
+    <div class="header-content">
+      <div class="instructor-avatar">
+        <i class="pi pi-users"></i>
+      </div>
+      <div class="instructor-info">
+        <h1>Dr. {{ instructor.firstName }} {{ instructor.lastName }}</h1>
+        <p class="instructor-details">
+          <span class="detail-item">
+            <i class="pi pi-id-card"></i>
+            Instructor ID: {{ instructor.id }}
+          </span>
+          <span class="detail-item">
+            <i class="pi pi-building"></i>
+            {{ instructor.departmentName || "Department not available" }}
+          </span>
+          <span class="detail-item">
+            <i class="pi pi-book"></i>
+            {{ assignedCourses.length }} Course(s)
+          </span>
+        </p>
+      </div>
+      <div class="instructor-stats">
+        <div class="stat-card">
+          <div class="stat-number">{{ assignedCourses.length }}</div>
+          <div class="stat-label">Courses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">
+            {{ teachingStats?.totalStudents || "75" }}
+          </div>
+          <div class="stat-label">Students</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">
+            {{ teachingStats?.experienceYears || "8" }}
+          </div>
+          <div class="stat-label">Years Exp.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-navigation">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'overview'"
+      (click)="setActiveTab('overview')"
+    >
+      <i class="pi pi-home"></i>
+      Overview
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'courses'"
+      (click)="setActiveTab('courses')"
+    >
+      <i class="pi pi-book"></i>
+      My Courses
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'students'"
+      (click)="setActiveTab('students')"
+    >
+      <i class="pi pi-users"></i>
+      Students
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'schedule'"
+      (click)="setActiveTab('schedule')"
+    >
+      <i class="pi pi-calendar"></i>
+      Schedule
+    </button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Overview Tab -->
+    <div *ngIf="activeTab === 'overview'" class="tab-pane overview-tab">
+      <div class="overview-grid">
+        <!-- Teaching Stats -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-chart-bar"></i> Teaching Overview</h3>
+          </div>
+          <div class="card-content">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ assignedCourses.length }}</div>
+                <div class="stat-label">Active Courses</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{ teachingStats?.totalStudents || "75" }}
+                </div>
+                <div class="stat-label">Total Students</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{ teachingStats?.averageGrade || "85%" }}
+                </div>
+                <div class="stat-label">Avg. Class Grade</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{ teachingStats?.completionRate || "92%" }}
+                </div>
+                <div class="stat-label">Completion Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Classes -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-clock"></i> Today's Classes</h3>
+          </div>
+          <div class="card-content">
+            <div class="class-list">
+              <div class="class-item" *ngFor="let class of upcomingClasses">
+                <div class="class-time">{{ class.time }}</div>
+                <div class="class-details">
+                  <div class="class-name">{{ class.course }}</div>
+                  <div class="class-meta">
+                    {{ class.room }} • {{ class.students }} students
+                  </div>
+                </div>
+                <div class="class-actions">
+                  <p-button
+                    icon="pi pi-eye"
+                    size="small"
+                    [outlined]="true"
+                    title="View Class"
+                  ></p-button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-history"></i> Recent Activities</h3>
+          </div>
+          <div class="card-content">
+            <div class="activity-list">
+              <div
+                class="activity-item"
+                *ngFor="let activity of recentActivities"
+              >
+                <div class="activity-icon">
+                  <i [class]="'pi ' + getActivityIcon(activity.action)"></i>
+                </div>
+                <div class="activity-info">
+                  <div class="activity-action">{{ activity.action }}</div>
+                  <div class="activity-meta">
+                    {{ activity.course }} • {{ activity.time }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-user"></i> Personal Information</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{
+                  instructor.phoneNumber || "Not provided"
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{
+                  instructor.dateOfBirth | date
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Gender</span>
+                <span class="info-value">{{
+                  instructor.gender || "Not specified"
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Department</span>
+                <span class="info-value">{{
+                  instructor.departmentName || "Not assigned"
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Tab -->
+    <div *ngIf="activeTab === 'courses'" class="tab-pane courses-tab">
+      <div class="courses-header">
+        <h2>Teaching Courses ({{ assignedCourses.length }})</h2>
+        <p-button
+          label="Course Materials"
+          icon="pi pi-folder"
+          [outlined]="true"
+        ></p-button>
+      </div>
+      <div class="courses-grid">
+        <div class="course-card" *ngFor="let course of assignedCourses">
+          <div class="course-header">
+            <h4>{{ course.name }}</h4>
+            <span class="course-code">{{ course.code }}</span>
+          </div>
+          <div class="course-details">
+            <!-- <p>{{ course.description || "Course description not available." }}</p> -->
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
+              cupiditate, autem expedita culpa molestias est explicabo, illo
+              ipsam quae officiis repellat. Vitae autem facilis expedita
+              asperiores numquam veniam sint rem?
+            </p>
+            <div class="course-meta">
+              <span
+                ><i class="pi pi-calendar"></i>
+                {{ course.credits }} Credits</span
+              >
+              <span><i class="pi pi-users"></i> 25 Students</span>
+            </div>
+          </div>
+          <div class="course-actions">
+            <p-button
+              label="Manage Course"
+              size="small"
+              [outlined]="true"
+            ></p-button>
+            <p-button
+              label="Grade Book"
+              size="small"
+              icon="pi pi-book"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Tab -->
+    <div *ngIf="activeTab === 'students'" class="tab-pane students-tab">
+      <div class="students-header">
+        <h2>My Students</h2>
+        <div class="filter-controls">
+          <p-dropdown
+            [options]="assignedCourses"
+            optionLabel="name"
+            placeholder="Filter by Course"
+          ></p-dropdown>
+        </div>
+      </div>
+
+      <div class="students-grid">
+        <div class="student-card" *ngFor="let student of instructorStudents">
+          <div class="student-info">
+            <div class="student-avatar">
+              <i class="pi pi-user"></i>
+            </div>
+            <div class="student-details">
+              <h4>{{ student.firstName }} {{ student.lastName }}</h4>
+              <p>Student ID: {{ student.id }}</p>
+              <p>Course: {{ student.courseName }}</p>
+            </div>
+          </div>
+          <div class="student-grade">
+            <span class="grade-label">Current Grade</span>
+            <span class="grade-value">{{ student.currentGrade || "N/A" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Tab -->
+    <div *ngIf="activeTab === 'schedule'" class="tab-pane schedule-tab">
+      <div class="schedule-container">
+        <h2>Teaching Schedule</h2>
+        <div class="schedule-grid">
+          <div class="time-slot" *ngFor="let class of upcomingClasses">
+            <div class="time">{{ class.time }}</div>
+            <div class="class-info">
+              <h4>{{ class.course }}</h4>
+              <p>{{ class.room }} • {{ class.students }} students</p>
+            </div>
+            <div class="class-actions">
+              <p-button
+                label="Join Class"
+                size="small"
+                icon="pi pi-video"
+              ></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <p-progressSpinner></p-progressSpinner>
+  <p>Loading instructor data...</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !loading" class="error-container">
+  <p-message severity="error" [text]="error"></p-message>
+</div>

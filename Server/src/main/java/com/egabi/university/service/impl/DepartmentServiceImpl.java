@@ -28,6 +28,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentMapper departmentMapper;
     private final ValidationService validationService;
     
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * {@inheritDoc}
      */
@@ -106,6 +110,36 @@ public class DepartmentServiceImpl implements DepartmentService {
         
         // Delete the department
         departmentRepository.deleteById(departmentId);
+    }
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public List<DepartmentDTO> getDepartmentsByFacultyId(Long facultyId) {
+        // Validate faculty existence
+        validationService.assertFacultyExists(facultyId);
+        
+        // Fetch departments by faculty ID
+        List<Department> departments = departmentRepository.findAllByFacultyId(facultyId);
+        return departmentMapper.toDTOs(departments);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long countDepartmentsByFacultyId(Long facultyId) {
+        // Validate faculty existence
+        validationService.assertFacultyExists(facultyId);
+        
+        Long count = departmentRepository.countByFacultyId(facultyId);
+        return count != null ? count : 0L;
     }
     
     // ================================================================

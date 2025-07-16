@@ -24,9 +24,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
+    
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     private final ValidationService validationService;
+    
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
     
     /**
      * {@inheritDoc}
@@ -36,33 +41,6 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseDTO> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
         return courseMapper.toDTOs(courses);
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public List<CourseDTO> getAllCoursesByDepartmentId(Long departmentId) {
-        // Validate department existence
-        validationService.assertDepartmentExists(departmentId);
-        
-        // Fetch courses by department ID
-        List<Course> courses = courseRepository.findAllByDepartmentId(departmentId);
-        return courseMapper.toDTOs(courses);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Long countAllCoursesByDepartmentId(Long departmentId) {
-        // Validate department existence
-        validationService.assertDepartmentExists(departmentId);
-        
-        // Count courses by department ID
-        return courseRepository.countAllByDepartmentId(departmentId);
     }
     
     /**
@@ -138,6 +116,38 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(course);
     }
     
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public List<CourseDTO> getCoursesByDepartmentId(Long departmentId) {
+        // Validate department existence
+        validationService.assertDepartmentExists(departmentId);
+        
+        // Fetch courses by department ID
+        List<Course> courses = courseRepository.findAllByDepartmentId(departmentId);
+        return courseMapper.toDTOs(courses);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long countCoursesByDepartmentId(Long departmentId) {
+        // Validate department existence
+        validationService.assertDepartmentExists(departmentId);
+        
+        // Count courses by department ID
+        Long count = courseRepository.countAllByDepartmentId(departmentId);
+        return count != null ? count : 0L;
+    }
+    
     // ================================================================
     // Helper methods
     // ================================================================
@@ -171,5 +181,4 @@ public class CourseServiceImpl implements CourseService {
         // Save the course
         return courseRepository.save(course);
     }
-    
 }

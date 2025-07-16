@@ -1,6 +1,6 @@
 <div class="content">
   <app-section-head
-    title="Department"
+    title="Faculty Departments"
     showBtnPath="/departments"
     addBtnPath="/departments/add"
     addBtnText="Department"
@@ -10,7 +10,7 @@
     <app-card
       *ngFor="let department of departments"
       [title]="department.name"
-      [subTitle]="department.numOfCourses + ' Course(s)'"
+      [subTitle]="department.courseCount + ' Course(s)'"
       [id]="department.id"
       [routePath]="'/departments'"
     >

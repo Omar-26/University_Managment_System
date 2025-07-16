@@ -5,6 +5,11 @@ import com.egabi.university.dto.FacultyDTO;
 import java.util.List;
 
 public interface FacultyService {
+    
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * Retrieves all faculties.
      *
@@ -43,20 +48,4 @@ public interface FacultyService {
      * @param id the ID of the faculty to delete.
      */
     void deleteFaculty(Long id);
-    
-    /**
-     * Count departments for a specific faculty.
-     *
-     * @param id the ID of the faculty.
-     * @return the count of departments associated with the faculty.
-     */
-    Long countDepartmentsByFacultyId(Long id);
-    
-    /**
-     * Count students for a specific faculty.
-     *
-     * @param id the ID of the faculty.
-     * @return the count of students associated with the faculty.
-     */
-    Long countStudentsByFacultyId(Long id);
 }

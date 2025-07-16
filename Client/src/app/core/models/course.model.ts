@@ -5,3 +5,8 @@ export interface CourseDTO {
   levelId: number;
   departmentId: number;
 }
+
+export interface CourseWithDetails extends CourseDTO {
+  departmentName?: string;
+  levelName?: string;
+}

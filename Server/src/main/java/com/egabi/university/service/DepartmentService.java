@@ -5,6 +5,11 @@ import com.egabi.university.dto.DepartmentDTO;
 import java.util.List;
 
 public interface DepartmentService {
+    
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * Get all departments available in the system.
      *
@@ -43,4 +48,24 @@ public interface DepartmentService {
      * @param departmentId the ID of the department to be deleted
      */
     void deleteDepartment(Long departmentId);
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    /**
+     * Get all departments by faculty ID.
+     *
+     * @param facultyId the ID of the faculty
+     * @return a list of DepartmentDTO objects associated with the specified faculty
+     */
+    List<DepartmentDTO> getDepartmentsByFacultyId(Long facultyId);
+    
+    /**
+     * Count departments for a specific faculty.
+     *
+     * @param facultyId the ID of the faculty.
+     * @return the count of departments associated with the faculty.
+     */
+    Long countDepartmentsByFacultyId(Long facultyId);
 }

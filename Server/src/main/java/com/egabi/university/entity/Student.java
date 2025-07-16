@@ -40,4 +40,9 @@ public class Student {
     // Student <-> Enrollment (one-to-many)
     @OneToMany(mappedBy = "student")
     private List<Enrollment> enrollments = new ArrayList<>();
+    
+    // Student <-> User (one-to-one)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

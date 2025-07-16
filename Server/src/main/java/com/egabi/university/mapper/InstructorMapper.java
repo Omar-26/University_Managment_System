@@ -19,6 +19,7 @@ public interface InstructorMapper {
      */
     @Mappings({
             @Mapping(source = "department.id", target = "departmentId"),
+            @Mapping(source = "department.name", target = "departmentName"),
             @Mapping(source = "courses", target = "courseCodes")
     })
     InstructorDTO toDTO(Instructor instructor);

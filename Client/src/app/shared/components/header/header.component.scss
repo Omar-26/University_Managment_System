@@ -90,5 +90,10 @@
   }
 }
 
-.header-right {
+.user-info {
+  align-items: center;
+  color: var(--color-white);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: capitalize;
 }

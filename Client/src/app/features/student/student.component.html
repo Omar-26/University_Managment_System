@@ -1,0 +1,316 @@
+<!-- In student.component.html -->
+<div class="student-container" *ngIf="!loading && student">
+  <!-- Header Section -->
+  <div class="student-header">
+    <div class="header-content">
+      <div class="student-avatar">
+        <i class="pi pi-user"></i>
+      </div>
+      <div class="student-info">
+        <h1>{{ student.firstName }} {{ student.lastName }}</h1>
+        <p class="student-details">
+          <span class="detail-item">
+            <i class="pi pi-id-card"></i>
+            Student ID: {{ student.id }}
+          </span>
+          <span class="detail-item">
+            <i class="pi pi-building"></i>
+            {{ student.departmentName || "Department not available" }}
+          </span>
+          <span class="detail-item">
+            <i class="pi pi-star"></i>
+            {{ student.levelName || "Level not available" }}
+          </span>
+          <span class="detail-item" *ngIf="student.facultyName">
+            <i class="pi pi-home"></i>
+            {{ student.facultyName }}
+          </span>
+        </p>
+      </div>
+      <div class="student-stats">
+        <div class="stat-card">
+          <div class="stat-number">{{ academicInfo?.gpa || "3.85" }}</div>
+          <div class="stat-label">GPA</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ enrolledCourses.length }}</div>
+          <div class="stat-label">Courses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">
+            {{ academicInfo?.completedCredits || "65" }}
+          </div>
+          <div class="stat-label">Credits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-navigation">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'overview'"
+      (click)="setActiveTab('overview')"
+    >
+      <i class="pi pi-home"></i>
+      Overview
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'courses'"
+      (click)="setActiveTab('courses')"
+    >
+      <i class="pi pi-book"></i>
+      My Courses
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'grades'"
+      (click)="setActiveTab('grades')"
+    >
+      <i class="pi pi-chart-line"></i>
+      Grades
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'schedule'"
+      (click)="setActiveTab('schedule')"
+    >
+      <i class="pi pi-calendar"></i>
+      Schedule
+    </button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Overview Tab -->
+    <div *ngIf="activeTab === 'overview'" class="tab-pane overview-tab">
+      <div class="overview-grid">
+        <!-- Quick Stats -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-chart-bar"></i> Academic Progress</h3>
+          </div>
+          <div class="card-content">
+            <div class="progress-item">
+              <span class="progress-label">Overall Progress</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+              </div>
+              <span class="progress-value">75%</span>
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">Current Semester</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%"></div>
+              </div>
+              <span class="progress-value">60%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Classes -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-clock"></i> Today's Classes</h3>
+          </div>
+          <div class="card-content">
+            <div class="class-list">
+              <div class="class-item" *ngFor="let class of upcomingClasses">
+                <div class="class-time">{{ class.time }}</div>
+                <div class="class-details">
+                  <div class="class-name">{{ class.course }}</div>
+                  <div class="class-meta">
+                    {{ class.room }} • {{ class.instructor }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Grades -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-star-fill"></i> Recent Grades</h3>
+          </div>
+          <div class="card-content">
+            <div class="grade-list">
+              <div class="grade-item" *ngFor="let grade of recentGrades">
+                <div class="grade-info">
+                  <div class="grade-course">{{ grade.course }}</div>
+                  <div class="grade-assignment">{{ grade.assignment }}</div>
+                </div>
+                <div class="grade-score" [class]="getGradeClass(grade.grade)">
+                  {{ grade.grade }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="overview-card">
+          <div class="card-header">
+            <h3><i class="pi pi-user"></i> Personal Information</h3>
+          </div>
+          <div class="card-content">
+            <div class="info-grid">
+              <!-- Remove email since it's not in backend -->
+              <div class="info-item">
+                <span class="info-label">Phone</span>
+                <span class="info-value">{{
+                  student.phoneNumber || "Not provided"
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ student.dateOfBirth | date }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Gender</span>
+                <span class="info-value">{{
+                  student.gender || "Not specified"
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Department</span>
+                <span class="info-value">{{
+                  student.departmentName || "Not assigned"
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Level</span>
+                <span class="info-value">{{
+                  student.levelName || "Not assigned"
+                }}</span>
+              </div>
+              <div class="info-item" *ngIf="student.facultyName">
+                <span class="info-label">Faculty</span>
+                <span class="info-value">{{ student.facultyName }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Tab -->
+    <div *ngIf="activeTab === 'courses'" class="tab-pane courses-tab">
+      <div class="courses-header">
+        <h2>Enrolled Courses ({{ enrolledCourses.length }})</h2>
+        <p-button
+          label="Browse Courses"
+          icon="pi pi-search"
+          [outlined]="true"
+        ></p-button>
+      </div>
+      <div class="courses-grid">
+        <div class="course-card" *ngFor="let course of enrolledCourses">
+          <div class="course-header">
+            <h4>{{ course.name }}</h4>
+            <span class="course-code">{{ course.code }}</span>
+          </div>
+          <div class="course-details">
+            <!-- <p>
+              {{ course.description || "Course description not available." }}
+            </p> -->
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi
+              a impedit consequatur beatae pariatur, asperiores numquam suscipit
+              totam eveniet mollitia alias ea adipisci earum omnis velit?
+              Accusantium pariatur dolore unde!
+            </p>
+            <div class="course-meta">
+              <span
+                ><i class="pi pi-calendar"></i>
+                {{ course.credits }} Credits</span
+              >
+              <span><i class="pi pi-user"></i> Dr. Instructor</span>
+            </div>
+          </div>
+          <div class="course-actions">
+            <p-button
+              label="View Details"
+              size="small"
+              [outlined]="true"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grades Tab -->
+    <div *ngIf="activeTab === 'grades'" class="tab-pane grades-tab">
+      <div class="grades-summary">
+        <div class="gpa-card">
+          <div class="gpa-value">{{ academicInfo?.gpa || "3.85" }}</div>
+          <div class="gpa-label">Current GPA</div>
+        </div>
+        <div class="credits-info">
+          <div class="credit-item">
+            <span class="credit-label">Completed Credits</span>
+            <span class="credit-value">{{
+              academicInfo?.completedCredits || "65"
+            }}</span>
+          </div>
+          <div class="credit-item">
+            <span class="credit-label">Total Required</span>
+            <span class="credit-value">{{
+              academicInfo?.totalCredits || "120"
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grades-table-container">
+        <p-dataView [value]="recentGrades" layout="list">
+          <ng-template pTemplate="list" let-grades>
+            <div class="grade-row" *ngFor="let grade of grades">
+              <div class="grade-course-info">
+                <h5>{{ grade.course }}</h5>
+                <p>{{ grade.assignment }}</p>
+              </div>
+              <div class="grade-details">
+                <span
+                  class="grade-score"
+                  [class]="getGradeClass(grade.grade)"
+                  >{{ grade.grade }}</span
+                >
+                <span class="grade-date">{{ grade.date | date }}</span>
+              </div>
+            </div>
+          </ng-template>
+        </p-dataView>
+      </div>
+    </div>
+
+    <!-- Schedule Tab -->
+    <div *ngIf="activeTab === 'schedule'" class="tab-pane schedule-tab">
+      <div class="schedule-container">
+        <h2>Weekly Schedule</h2>
+        <div class="schedule-grid">
+          <div class="time-slot" *ngFor="let class of upcomingClasses">
+            <div class="time">{{ class.time }}</div>
+            <div class="class-info">
+              <h4>{{ class.course }}</h4>
+              <p>{{ class.room }} • {{ class.instructor }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <p-progressSpinner></p-progressSpinner>
+  <p>Loading student data...</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !loading" class="error-container">
+  <p-message severity="error" [text]="error"></p-message>
+</div>
