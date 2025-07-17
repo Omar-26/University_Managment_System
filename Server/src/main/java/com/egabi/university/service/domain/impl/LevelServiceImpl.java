@@ -1,4 +1,4 @@
-package com.egabi.university.service.impl;
+package com.egabi.university.service.domain.impl;
 
 import com.egabi.university.dto.LevelDTO;
 import com.egabi.university.entity.Faculty;
@@ -7,7 +7,7 @@ import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.LevelMapper;
 import com.egabi.university.repository.LevelRepository;
-import com.egabi.university.service.LevelService;
+import com.egabi.university.service.domain.LevelService;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

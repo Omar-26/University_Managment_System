@@ -1,6 +1,8 @@
 package com.egabi.university.service.validation.impl;
 
 import com.egabi.university.entity.*;
+import com.egabi.university.entity.authentication.Role;
+import com.egabi.university.entity.authentication.User;
 import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
@@ -24,6 +26,7 @@ public class ValidationServiceImpl implements ValidationService {
     private final CourseRepository courseRepository;
     private final InstructorRepository instructorRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final UserRepository userRepository;
     
     // ============================
     // Faculty
@@ -242,6 +245,71 @@ public class ValidationServiceImpl implements ValidationService {
                     "Enrollment already exists for student_id " + enrollmentId.getStudentId()
                             + " and course_code " + enrollmentId.getCourseCode(),
                     "ENROLLMENT_ALREADY_EXISTS");
+        }
+    }
+    
+    // ============================
+    // User
+    // ============================
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getUserByIdOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(
+                        "User with id " + userId + " not found", "USER_NOT_FOUND"));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertUserExists(Long userId) {
+        boolean exists = userRepository.existsById(userId);
+        if (!exists)
+            throw new NotFoundException("User with id " + userId + " not found", "USER_NOT_FOUND");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertUserEmailUnique(String email) {
+        boolean emailExists = userRepository.existsByEmailIgnoreCase(email);
+        if (emailExists) {
+            throw new ConflictException(
+                    "User with email '" + email + "' already exists",
+                    "USER_EMAIL_ALREADY_EXISTS");
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertUserPasswordValid(String password) {
+        if (password == null || password.length() < 8) {
+            throw new ConflictException(
+                    "Password must be at least 8 characters long",
+                    "INVALID_PASSWORD");
+        }
+        //TODO Additional password validation logic can be added here
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assertUserRoleValid(String role) {
+        if (role == null || role.isEmpty()) {
+            throw new BadRequestException("Role must not be null or empty", "INVALID_ROLE");
+        }
+        try {
+            Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid role: " + role, "INVALID_ROLE");
         }
     }
     

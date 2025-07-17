@@ -1,7 +1,7 @@
 package com.egabi.university.controller;
 
 import com.egabi.university.dto.CourseDTO;
-import com.egabi.university.service.CourseService;
+import com.egabi.university.service.domain.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

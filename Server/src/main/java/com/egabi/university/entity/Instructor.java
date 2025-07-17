@@ -1,5 +1,6 @@
 package com.egabi.university.entity;
 
+import com.egabi.university.entity.authentication.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,4 +42,9 @@ public class Instructor {
             inverseJoinColumns = @JoinColumn(name = "course_code")
     )
     private List<Course> courses = new ArrayList<>();
+    
+    // Instructor <-> User (one-to-one)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

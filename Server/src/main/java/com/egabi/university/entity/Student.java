@@ -1,7 +1,9 @@
 package com.egabi.university.entity;
 
+import com.egabi.university.entity.authentication.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Student {
     
     @Id

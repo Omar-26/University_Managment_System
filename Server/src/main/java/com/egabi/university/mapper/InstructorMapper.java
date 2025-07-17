@@ -18,8 +18,11 @@ public interface InstructorMapper {
      * @return the converted InstructorDTO
      */
     @Mappings({
+            @Mapping(source = "user.id", target = "userId"),
             @Mapping(source = "department.id", target = "departmentId"),
             @Mapping(source = "department.name", target = "departmentName"),
+            @Mapping(source = "department.faculty.id", target = "facultyId"),
+            @Mapping(source = "department.faculty.name", target = "facultyName"),
             @Mapping(source = "courses", target = "courseCodes")
     })
     InstructorDTO toDTO(Instructor instructor);

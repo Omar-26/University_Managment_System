@@ -1,6 +1,7 @@
 package com.egabi.university.service.validation;
 
 import com.egabi.university.entity.*;
+import com.egabi.university.entity.authentication.User;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 
@@ -196,6 +197,56 @@ public interface ValidationService {
      * @throws ConflictException if the enrollment exists when it should not
      */
     void assertEnrollmentExists(EnrollmentId enrollmentId, boolean shouldExist);
+    
+    // ============================
+    // User
+    // ============================
+    
+    /**
+     * Validates that a User exists for the given ID.
+     * If not, throws a NotFoundException.
+     *
+     * @param userId the ID to validate
+     * @return the User entity if found
+     * @throws NotFoundException if the user does not exist
+     */
+    User getUserByIdOrThrow(Long userId);
+    
+    /**
+     * Asserts the existence of a user based on the provided ID.
+     *
+     * @param userId the ID of the user to check
+     * @throws NotFoundException if the user does not exist when it should
+     */
+    void assertUserExists(Long userId);
+    
+    /**
+     * Validates that a user email is unique.
+     * If not, throws a ConflictException.
+     *
+     * @param email the email to validate
+     * @throws ConflictException if the email already exists
+     */
+    void assertUserEmailUnique(String email);
+    
+    /**
+     * Validates that a user password meets the required criteria.
+     * If not, throws a ConflictException.
+     *
+     * @param password the password to validate
+     * @throws ConflictException if the password does not meet the criteria
+     */
+    void assertUserPasswordValid(String password);
+    
+    /**
+     * Validates that a user role is valid.
+     * If not, throws a ConflictException.
+     *
+     * @param role the role to validate
+     * @throws ConflictException if the role is not valid
+     */
+    void assertUserRoleValid(String role);
+    
     
     // ============================
     // MISC

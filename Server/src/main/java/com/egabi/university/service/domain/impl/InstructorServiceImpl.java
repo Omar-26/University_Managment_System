@@ -1,13 +1,14 @@
-package com.egabi.university.service.impl;
+package com.egabi.university.service.domain.impl;
 
 import com.egabi.university.dto.InstructorDTO;
 import com.egabi.university.entity.Course;
 import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Instructor;
+import com.egabi.university.entity.authentication.User;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.InstructorMapper;
 import com.egabi.university.repository.InstructorRepository;
-import com.egabi.university.service.InstructorService;
+import com.egabi.university.service.domain.InstructorService;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class InstructorServiceImpl implements InstructorService {
     private final InstructorMapper instructorMapper;
     private final ValidationService validationService;
     
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
     
     /**
      * {@inheritDoc}
@@ -57,6 +61,12 @@ public class InstructorServiceImpl implements InstructorService {
     public InstructorDTO createInstructor(InstructorDTO instructorDTO) {
         // Map the DTO to the entity
         Instructor instructor = instructorMapper.toEntity(instructorDTO);
+        
+        // Check the instructor is associated with a user if yes set the user, otherwise leave it null
+        if (instructorDTO.getUserId() != null) {
+            User user = validationService.getUserByIdOrThrow(instructorDTO.getUserId());
+            instructor.setUser(user);
+        }
         
         // Validate department - courses and save instructor
         instructor = validateAndSaveInstructor(instructor);
@@ -102,6 +112,25 @@ public class InstructorServiceImpl implements InstructorService {
         instructorRepository.deleteById(instructorId);
     }
     
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    @Override
+    @Transactional
+    public InstructorDTO createInstructor(InstructorDTO instructorDTO, User user) {
+        // Map the DTO to the entity
+        Instructor instructor = instructorMapper.toEntity(instructorDTO);
+        
+        // Associate the instructor with the user
+        instructor.setUser(user);
+        
+        // Validate department - courses and save instructor
+        instructor = validateAndSaveInstructor(instructor);
+        
+        // Return the saved instructor as a DTO
+        return instructorMapper.toDTO(instructor);
+    }
     
     // ================================================================
     // Helper methods

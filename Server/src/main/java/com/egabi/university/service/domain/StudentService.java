@@ -1,6 +1,7 @@
-package com.egabi.university.service;
+package com.egabi.university.service.domain;
 
 import com.egabi.university.dto.StudentDTO;
+import com.egabi.university.entity.authentication.User;
 
 import java.util.List;
 
@@ -52,6 +53,19 @@ public interface StudentService {
     // ================================================================
     // Business Logic Methods
     // ================================================================
+    
+    // User-related methods
+    
+    /**
+     * Create a new student with the associated user.
+     *
+     * @param studentDTO the student data transfer object containing student details
+     * @param user       the user associated with the student
+     * @return the created StudentDTO object
+     */
+    StudentDTO createStudent(StudentDTO studentDTO, User user);
+    
+    // Faculty-related methods
     
     /**
      * Get all students in a faculty by its ID.

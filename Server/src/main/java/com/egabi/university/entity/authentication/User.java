@@ -1,5 +1,7 @@
-package com.egabi.university.entity;
+package com.egabi.university.entity.authentication;
 
+import com.egabi.university.entity.Instructor;
+import com.egabi.university.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,16 +25,32 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(nullable = false, unique = true)
     private String email;
+    
+    @Column(nullable = false, unique = true)
     private String password;
+    
     @Enumerated(EnumType.STRING)
     private Role role;
+    
+    @OneToOne(mappedBy = "user")
+    private Student student;
+    
+    @OneToOne(mappedBy = "user")
+    private Instructor instructor;
+    
+    @Column(name = "locked", nullable = false)
+    private boolean locked = false;
+    
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
-    
     
     @Override
     public String getUsername() {
@@ -45,22 +63,12 @@ public class User implements UserDetails {
     }
     
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-    
-    @Override
     public boolean isAccountNonLocked() {
-        return true;
-    }
-    
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+        return !locked;
     }
     
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

@@ -1,11 +1,11 @@
-package com.egabi.university.service.impl;
+package com.egabi.university.service.domain.impl;
 
 import com.egabi.university.dto.FacultyDTO;
 import com.egabi.university.entity.Faculty;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.mapper.FacultyMapper;
 import com.egabi.university.repository.FacultyRepository;
-import com.egabi.university.service.FacultyService;
+import com.egabi.university.service.domain.FacultyService;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.egabi.university.entity;
+package com.egabi.university.entity.authentication;
 
 public enum Role {
     STUDENT,

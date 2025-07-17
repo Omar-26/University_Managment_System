@@ -17,6 +17,7 @@ import java.util.List;
 
 public class InstructorDTO {
     private Long id;
+    private Long userId;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -24,5 +25,7 @@ public class InstructorDTO {
     private String gender;
     private Long departmentId;
     private String departmentName;
+    private Long facultyId;
+    private String facultyName;
     private List<String> courseCodes;
 }

@@ -1,14 +1,15 @@
-package com.egabi.university.service.impl;
+package com.egabi.university.service.domain.impl;
 
 import com.egabi.university.dto.StudentDTO;
 import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Level;
 import com.egabi.university.entity.Student;
+import com.egabi.university.entity.authentication.User;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.StudentMapper;
 import com.egabi.university.repository.StudentRepository;
-import com.egabi.university.service.StudentService;
+import com.egabi.university.service.domain.StudentService;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,12 @@ public class StudentServiceImpl implements StudentService {
         // Map the DTO to the entity
         Student student = studentMapper.toEntity(studentDTO);
         
+        // Check the student is associated with a user if yes set the user, otherwise leave it null
+        if (studentDTO.getUserId() != null) {
+            User user = validationService.getUserByIdOrThrow(studentDTO.getUserId());
+            student.setUser(user);
+        }
+        
         // Validate department - level and save student
         student = vaildateAndSaveStudent(student);
         
@@ -107,10 +114,32 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.deleteById(studentId);
     }
     
-    
     // ================================================================
     // Business Logic Methods
     // ================================================================
+    
+    // User-related methods
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public StudentDTO createStudent(StudentDTO studentDTO, User user) {
+        // Map the DTO to the entity
+        Student student = studentMapper.toEntity(studentDTO);
+        
+        // Associate the student with the user
+        student.setUser(user);
+        
+        // Validate department - level and save student
+        student = vaildateAndSaveStudent(student);
+        
+        // Return the saved student as a DTO
+        return studentMapper.toDTO(student);
+    }
+    
+    // Faculty-related methods
     
     /**
      * {@inheritDoc}
@@ -168,6 +197,12 @@ public class StudentServiceImpl implements StudentService {
         // 2. ensure that the department exists
         Department department = validationService.getDepartmentByIdOrThrow(departmentId);
         student.setDepartment(department);
+        
+        //TODO 3. ensure that the department is in the same faculty as the level
+//        if (!department.getFaculty().getId().equals(level.getFaculty().getId())) {
+//            throw new ConflictException("Department and level must be in the same faculty",
+//                    "DEPARTMENT_LEVEL_FACULTY_MISMATCH");
+//        }
         
         // Save the student
         return studentRepository.save(student);

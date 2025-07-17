@@ -1,10 +1,16 @@
-package com.egabi.university.service;
+package com.egabi.university.service.domain;
 
 import com.egabi.university.dto.InstructorDTO;
+import com.egabi.university.entity.authentication.User;
 
 import java.util.List;
 
 public interface InstructorService {
+    
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
+    
     /**
      * Get all instructors available in the system.
      *
@@ -43,4 +49,20 @@ public interface InstructorService {
      * @param instructorId the ID of the instructor to be deleted
      */
     void deleteInstructor(Long instructorId);
+    
+    
+    // ================================================================
+    // Business Logic Methods
+    // ================================================================
+    
+    // User-related methods
+    
+    /**
+     * Create a new instructor with the associated user.
+     *
+     * @param instructorDTO the instructor data transfer object containing instructor details
+     * @param user          the user associated with the instructor
+     * @return the created InstructorDTO object
+     */
+    InstructorDTO createInstructor(InstructorDTO instructorDTO, User user);
 }

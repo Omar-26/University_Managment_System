@@ -1,4 +1,4 @@
-package com.egabi.university.service.impl;
+package com.egabi.university.service.domain.impl;
 
 import com.egabi.university.dto.EnrollmentDTO;
 import com.egabi.university.entity.Course;
@@ -8,7 +8,7 @@ import com.egabi.university.entity.Student;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.EnrollmentMapper;
 import com.egabi.university.repository.EnrollmentRepository;
-import com.egabi.university.service.EnrollmentService;
+import com.egabi.university.service.domain.EnrollmentService;
 import com.egabi.university.service.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentMapper enrollmentMapper;
     private final ValidationService validationService;
     
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
     
     /**
      * {@inheritDoc}

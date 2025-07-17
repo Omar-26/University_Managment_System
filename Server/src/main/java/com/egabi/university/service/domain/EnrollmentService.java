@@ -1,4 +1,4 @@
-package com.egabi.university.service;
+package com.egabi.university.service.domain;
 
 import com.egabi.university.dto.EnrollmentDTO;
 

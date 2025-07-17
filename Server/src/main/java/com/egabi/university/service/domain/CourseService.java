@@ -1,4 +1,4 @@
-package com.egabi.university.service;
+package com.egabi.university.service.domain;
 
 import com.egabi.university.dto.CourseDTO;
 
@@ -67,5 +67,4 @@ public interface CourseService {
      * @return the count of courses associated with the specified department
      */
     Long countCoursesByDepartmentId(Long departmentId);
-    
 }

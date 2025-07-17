@@ -64,6 +64,12 @@ public final class ApiPaths {
     public static final String ENROLLMENTS = BASE_API + "/enrollments";
     
     /**
+     * Path for Auth-related endpoints.
+     * Example: /api/auth
+     */
+    public static final String AUTH = BASE_API + "/auth";
+    
+    /**
      * Private constructor to prevent instantiation.
      * This is a utility class.
      */
