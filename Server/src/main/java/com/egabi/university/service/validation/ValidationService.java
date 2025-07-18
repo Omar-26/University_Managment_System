@@ -5,6 +5,12 @@ import com.egabi.university.entity.authentication.User;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 
+/**
+ * ValidationService provides methods to validate the existence and uniqueness of various entities
+ * in the university system, such as Faculty, Level, Department, Student, Course, Instructor,
+ * Enrollment, and User.
+ * It throws appropriate exceptions when validation fails.
+ */
 public interface ValidationService {
     
     // ============================

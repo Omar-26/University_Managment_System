@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-
+/**
+ * Represents the composite key for the Enrollment entity.
+ * It consists of a student ID and a course code.
+ */
 @Embeddable
 @Data
 @NoArgsConstructor

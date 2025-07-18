@@ -9,6 +9,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a student in the university system.
+ * Each student has a unique ID, personal details, and is associated with a department and level.
+ * They can enroll in multiple courses and have a one-to-one relationship with a user account.
+ */
 @Entity
 @Data
 @NoArgsConstructor

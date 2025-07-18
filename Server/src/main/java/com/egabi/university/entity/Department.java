@@ -8,6 +8,11 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
+/**
+ * Represents a department in the university system.
+ * Each department has a unique ID, a name, and is associated with a faculty.
+ * It can have multiple students and courses.
+ */
 @Entity
 @Data
 @NoArgsConstructor

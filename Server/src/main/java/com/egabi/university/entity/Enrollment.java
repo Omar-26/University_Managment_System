@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents an enrollment of a student in a course.
+ * Each enrollment has a composite key consisting of student ID and course code.
+ * It also contains the student's grade for the course.
+ */
 @Entity
 @Data
 @NoArgsConstructor

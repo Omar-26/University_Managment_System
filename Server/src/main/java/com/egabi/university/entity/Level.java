@@ -9,6 +9,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a level in the university system.
+ * Each level is associated with a faculty and can have multiple students and courses.
+ */
 @Entity
 @Data
 @NoArgsConstructor

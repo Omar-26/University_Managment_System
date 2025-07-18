@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a faculty in the university system.
+ * Each faculty has a unique ID and a name, and can have multiple departments.
+ */
 @Entity
 @Data
 @NoArgsConstructor

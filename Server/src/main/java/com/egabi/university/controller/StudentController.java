@@ -1,7 +1,7 @@
 package com.egabi.university.controller;
 
 import com.egabi.university.dto.StudentDTO;
-import com.egabi.university.service.domain.StudentService;
+import com.egabi.university.service.academic.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +36,7 @@ public class StudentController {
     /**
      * Retrieves a student by ID.
      *
-     * @param id the ID of the student to retrieve.
+     * @param studentId the ID of the student to retrieve.
      * @return ResponseEntity containing the StudentDTO.
      */
     @GetMapping("/{studentId}")
@@ -73,7 +73,7 @@ public class StudentController {
     /**
      * Deletes a student by ID.
      *
-     * @param id the ID of the student to delete.
+     * @param studentId the ID of the student to delete.
      * @return ResponseEntity with no content.
      */
     @DeleteMapping("/{studentId}")

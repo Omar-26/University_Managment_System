@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class InstructorDTO {
     private Long id;
     private Long userId;

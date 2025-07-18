@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class StudentDTO {
     private Long id;
     private Long userId;

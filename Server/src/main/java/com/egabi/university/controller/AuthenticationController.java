@@ -1,8 +1,8 @@
 package com.egabi.university.controller;
 
-import com.egabi.university.entity.authentication.AuthenticationRequest;
-import com.egabi.university.entity.authentication.AuthenticationResponse;
-import com.egabi.university.entity.authentication.RegistrationRequest;
+import com.egabi.university.dto.authentication.request.AuthenticationRequest;
+import com.egabi.university.dto.authentication.request.RegistrationRequest;
+import com.egabi.university.dto.authentication.response.AuthenticationResponse;
 import com.egabi.university.service.authentication.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

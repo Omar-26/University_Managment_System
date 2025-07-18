@@ -9,6 +9,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an instructor in the university system.
+ * Each instructor has a unique ID, personal details, and is associated with a department.
+ * They can teach multiple courses and have a one-to-one relationship with a user account.
+ */
 @Entity
 @Data
 @NoArgsConstructor

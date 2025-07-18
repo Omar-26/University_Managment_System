@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a course in the university system.
+ * Each course has a unique code, a name, credits, and is associated with a level and department.
+ * It can have multiple enrollments and instructors.
+ */
 @Entity
 @Data
 @NoArgsConstructor

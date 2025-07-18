@@ -1,6 +1,6 @@
 package com.egabi.university;
 
-import com.egabi.university.config.JwtConfig;
+import com.egabi.university.config.jwt.JwtConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

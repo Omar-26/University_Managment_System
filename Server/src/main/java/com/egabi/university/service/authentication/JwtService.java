@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Service interface for handling JWT operations such as token generation, validation, and claims extraction.
+ */
 public interface JwtService {
     
     // ================================================================

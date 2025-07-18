@@ -2,8 +2,8 @@ package com.egabi.university.controller;
 
 import com.egabi.university.dto.CourseDTO;
 import com.egabi.university.dto.DepartmentDTO;
-import com.egabi.university.service.domain.CourseService;
-import com.egabi.university.service.domain.DepartmentService;
+import com.egabi.university.service.academic.CourseService;
+import com.egabi.university.service.academic.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
