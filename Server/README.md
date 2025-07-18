@@ -12,18 +12,18 @@ university/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/egabi/university/
-│   │   │   ├── controller/      # REST Controllers
-│   │   │   ├── dto/             # Data Transfer Objects (DTOs)
-│   │   │   ├── entity/          # JPA Entities
-│   │   │   ├── exception/       # Custom Exceptions & Handlers
-│   │   │   ├── mapper/          # MapStruct Mappers
-│   │   │   ├── repository/      # Spring Data JPA Repositories
-│   │   │   ├── service/         # Service Interfaces
-│   │   │   ├── service/impl/    # Service Implementations
+│   │   │   ├── controller/         # REST Controllers
+│   │   │   ├── dto/                # Data Transfer Objects (DTOs)
+│   │   │   ├── entity/             # JPA Entities
+│   │   │   ├── exception/          # Custom Exceptions & Handlers
+│   │   │   ├── mapper/             # MapStruct Mappers
+│   │   │   ├── repository/         # Spring Data JPA Repositories
+│   │   │   ├── service/            # Service Interfaces
+│   │   │   ├── service/impl/       # Service Implementations
 │   │   │   └── UniversityApplication.java # Spring Boot Main Class
 │   └── resources/
-│       └── application.properties # application configuration
-└── pom.xml                        # Maven Build File
+│       └── application.properties  # application configuration
+└── pom.xml                         # Maven Build File
 
 ````
 
@@ -53,6 +53,7 @@ university/
 ### ⚡ Setup & Run
 
 1️⃣ **Clone the repository**
+
 ```bash
 git clone https://github.com/Omar-26/University_Managment_System.git
 cd University_Managment_System
