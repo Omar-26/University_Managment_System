@@ -1,6 +1,8 @@
 package com.egabi.university.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +15,9 @@ import java.util.List;
  * It can have multiple enrollments and instructors.
  */
 @Entity
+@Builder
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Course {
     @Id

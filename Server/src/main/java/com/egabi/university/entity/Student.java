@@ -2,6 +2,8 @@ package com.egabi.university.entity;
 
 import com.egabi.university.entity.authentication.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +17,9 @@ import java.util.List;
  * They can enroll in multiple courses and have a one-to-one relationship with a user account.
  */
 @Entity
+@Builder
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Student {
     

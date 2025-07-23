@@ -1,6 +1,8 @@
 package com.egabi.university.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -14,7 +16,9 @@ import java.util.List;
  * It can have multiple students and courses.
  */
 @Entity
+@Builder
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Department {
     @Id

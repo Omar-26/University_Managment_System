@@ -3,6 +3,7 @@ package com.egabi.university.service.academic.impl;
 import com.egabi.university.dto.DepartmentDTO;
 import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Faculty;
+import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.DepartmentMapper;
@@ -77,17 +78,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     @Transactional
     public DepartmentDTO updateDepartment(Long departmentId, DepartmentDTO departmentDTO) {
-        // Check if the department exists
-        validationService.assertDepartmentExists(departmentId);
-        // Check if the department name is unique
-        validationService.assertDepartmentNameUnique(departmentDTO.getName());
+        // Validate that the department exists
+        Department existingDepartment = validationService.getDepartmentByIdOrThrow(departmentId);
+        // Check if the department name is changed and unique
+        if (!existingDepartment.getName().equals(departmentDTO.getName()))
+            validationService.assertDepartmentNameUnique(departmentDTO.getName());
         
-        // Map the DTO to the entity
-        Department updatedDepartment = departmentMapper.toEntity(departmentDTO);
-        updatedDepartment.setId(departmentId);
+        // Update the existing department entity the name from the DTO [id and faculty are ignored]
+        departmentMapper.updateEntityFromDTO(departmentDTO, existingDepartment);
         
         // Validate faculty and save the updated department
-        updatedDepartment = validateAndSaveDepartment(updatedDepartment);
+        Department updatedDepartment = departmentRepository.save(existingDepartment);
         
         // Return the updated department DTO
         return departmentMapper.toDTO(updatedDepartment);
@@ -109,7 +110,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     "DEPARTMENT_HAS_ASSOCIATIONS");
         
         // Delete the department
-        departmentRepository.deleteById(departmentId);
+        departmentRepository.delete(department);
     }
     
     // ================================================================
@@ -148,8 +149,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     
     /**
      * Validates the department's faculty and saves the department.
+     * <p>
+     * //     * @param department The department to validate and save.
      *
-     * @param department The department to validate and save.
      * @return The saved department.
      * @throws NotFoundException if the faculty is not found.
      */
@@ -157,7 +159,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         // Validate faculty
         // 1. Check if the faculty is set
         Long facultyId = Optional.ofNullable(department.getFaculty()).map(Faculty::getId)
-                .orElseThrow(() -> new NotFoundException("Department must be in a faculty", "FACULTY_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Department must be in a faculty", "FACULTY_NOT_PROVIDED"));
         
         // 2. Check if the faculty exists
         Faculty faculty = validationService.getFacultyByIdOrThrow(facultyId);

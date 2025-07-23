@@ -3,6 +3,8 @@ package com.egabi.university.mapper;
 import com.egabi.university.dto.FacultyDTO;
 import com.egabi.university.entity.Faculty;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -30,6 +32,15 @@ public interface FacultyMapper {
     Faculty toEntity(FacultyDTO dto);
     
     /**
+     * Updates an existing Faculty entity with values from a FacultyDTO.
+     *
+     * @param dto     the FacultyDTO containing updated values
+     * @param faculty the Faculty entity to update
+     */
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDTO(FacultyDTO dto, @MappingTarget Faculty faculty);
+    
+    /**
      * Converts a list of Faculty entities to a list of FacultyDTOs.
      *
      * @param faculties the list of Faculty entities
@@ -37,3 +48,5 @@ public interface FacultyMapper {
      */
     List<FacultyDTO> toDTOs(List<Faculty> faculties);
 }
+
+//TODO make all the updates ignore the id field
