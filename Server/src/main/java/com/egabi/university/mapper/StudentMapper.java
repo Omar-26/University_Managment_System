@@ -2,10 +2,7 @@ package com.egabi.university.mapper;
 
 import com.egabi.university.dto.StudentDTO;
 import com.egabi.university.entity.Student;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -40,10 +37,34 @@ public interface StudentMapper {
      * @return the converted Student entity
      */
     @Mappings({
+            @Mapping(target = "user", ignore = true),
             @Mapping(source = "departmentId", target = "department.id"),
-            @Mapping(source = "levelId", target = "level.id")
+            @Mapping(source = "levelId", target = "level.id"),
     })
     Student toEntity(StudentDTO studentDTO);
+    
+    /**
+     * Clones a Student entity.
+     * This method creates a new Student instance with the same properties as the source entity.
+     *
+     * @param source the Student entity to clone
+     * @return a new Student instance with the same properties
+     */
+    Student clone(Student source);
+    
+    /**
+     * Updates an existing Student entity with values from a StudentDTO.
+     *
+     * @param dto     the StudentDTO containing updated values
+     * @param student the Student entity to update
+     */
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(source = "departmentId", target = "department.id"),
+            @Mapping(source = "levelId", target = "level.id"),
+            @Mapping(target = "enrollments", ignore = true)
+    })
+    void updateEntityFromDTO(StudentDTO dto, @MappingTarget Student student);
     
     /**
      * Converts a list of Student entities to a list of StudentDTOs.

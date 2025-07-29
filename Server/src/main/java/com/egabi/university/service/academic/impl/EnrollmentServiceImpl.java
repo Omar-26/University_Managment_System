@@ -5,6 +5,7 @@ import com.egabi.university.entity.Course;
 import com.egabi.university.entity.Enrollment;
 import com.egabi.university.entity.EnrollmentId;
 import com.egabi.university.entity.Student;
+import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.EnrollmentMapper;
 import com.egabi.university.repository.EnrollmentRepository;
@@ -58,6 +59,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         // Map the entity to DTO
         return enrollmentMapper.toDTO(enrollment);
     }
+    //TODO Check the logic of assertions with getters is seems odd
     
     /**
      * {@inheritDoc}
@@ -80,6 +82,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         // Return the created enrollment as DTO
         return enrollmentMapper.toDTO(enrollment);
     }
+    // TODO edit to uodate only when data is changed
     
     /**
      * {@inheritDoc}
@@ -186,13 +189,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private Enrollment validateAndSaveEnrollment(Enrollment enrollment) {
         // Validate student and course
         Student student = validationService.getStudentByIdOrThrow(enrollment.getId().getStudentId());
-        Course course = validationService.getCourseByCodeOrThrow(enrollment.getId().getCourseCode());
         enrollment.setStudent(student);
+        Course course = validationService.getCourseByCodeOrThrow(enrollment.getId().getCourseCode());
         enrollment.setCourse(course);
         
         // Validate grade is set
         var grade = Optional.ofNullable(enrollment.getGrade())
-                .orElseThrow(() -> new NotFoundException("Grade must be set for enrollment", "GRADE_NOT_SET"));
+                .orElseThrow(() -> new BadRequestException("Grade must be set for enrollment", "GRADE_NOT_SET"));
         
         // Validate faculty is in range (between 0 and 100)
         validationService.validateGradeInRange(grade);

@@ -80,18 +80,25 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentDTO updateDepartment(Long departmentId, DepartmentDTO departmentDTO) {
         // Validate that the department exists
         Department existingDepartment = validationService.getDepartmentByIdOrThrow(departmentId);
-        // Check if the department name is changed and unique
-        if (!existingDepartment.getName().equals(departmentDTO.getName()))
+        
+        // Check if the sender changed any of the fields
+        Department newDepartment = departmentMapper.clone(existingDepartment);
+        departmentMapper.updateEntityFromDTO(departmentDTO, newDepartment);
+        boolean changed = !newDepartment.equals(existingDepartment);
+        
+        if (changed) {
+            // Validate that the department name is unique
             validationService.assertDepartmentNameUnique(departmentDTO.getName());
+            
+            // Update the existing department entity the name from the DTO [id and faculty are ignored]
+            departmentMapper.updateEntityFromDTO(departmentDTO, existingDepartment);
+            
+            // save the updated department
+            departmentRepository.save(existingDepartment);
+        }
         
-        // Update the existing department entity the name from the DTO [id and faculty are ignored]
-        departmentMapper.updateEntityFromDTO(departmentDTO, existingDepartment);
-        
-        // Validate faculty and save the updated department
-        Department updatedDepartment = departmentRepository.save(existingDepartment);
-        
-        // Return the updated department DTO
-        return departmentMapper.toDTO(updatedDepartment);
+        // Map the updated entity back to DTO
+        return departmentMapper.toDTO(existingDepartment);
     }
     
     /**

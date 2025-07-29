@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface InstructorMapper {
-    
+
     /**
      * Converts an Instructor entity to an InstructorDTO.
      *
@@ -26,7 +26,7 @@ public interface InstructorMapper {
             @Mapping(source = "courses", target = "courseCodes")
     })
     InstructorDTO toDTO(Instructor instructor);
-    
+
     /**
      * Converts an InstructorDTO to an Instructor entity.
      *
@@ -35,12 +35,12 @@ public interface InstructorMapper {
      */
     @Mappings({
             @Mapping(source = "departmentId", target = "department.id"),
-            @Mapping(source = "courseCodes", target = "courses")
+            @Mapping(source = "courseCodes", target = "courses", ignore = true)
     })
     Instructor toEntity(InstructorDTO instructorDTO);
-    
+
     List<InstructorDTO> toDTOs(List<Instructor> instructors);
-    
+
     /**
      * Updates an existing Instructor entity with values from the DTO.
      * Only non-null fields will overwrite.
@@ -48,12 +48,16 @@ public interface InstructorMapper {
      * @param dto        the source DTO
      * @param instructor the target Instructor entity to update
      */
+    @Mappings({
+            @Mapping(source = "departmentId", target = "department.id"),
+            @Mapping(source = "courseCodes", target = "courses", ignore = true)
+    })
     void updateInstructorFromDto(InstructorDTO dto, @MappingTarget Instructor instructor);
-    
+
     // ================================================================
     // Custom Mappers for Course Codes
     // ================================================================
-    
+
     /**
      * Maps a Course entity to its code.
      *
@@ -63,7 +67,7 @@ public interface InstructorMapper {
     default String map(Course course) {
         return course.getCode();
     }
-    
+
     /**
      * Maps a course code to a Course entity.
      *
@@ -75,7 +79,7 @@ public interface InstructorMapper {
         course.setCode(code);
         return course;
     }
-    
+
     /**
      * Maps a list of Course entities to a list of course codes.
      *
@@ -85,7 +89,7 @@ public interface InstructorMapper {
     default List<String> mapCoursesToCodes(List<Course> courses) {
         return courses != null ? courses.stream().map(Course::getCode).collect(Collectors.toList()) : null;
     }
-    
+
     /**
      * Maps a list of course codes to a list of Course entities.
      *

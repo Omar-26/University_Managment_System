@@ -32,6 +32,15 @@ public interface DepartmentMapper {
     Department toEntity(DepartmentDTO dto);
     
     /**
+     * Clones a Department entity.
+     * This method creates a new Department instance with the same properties as the source entity.
+     *
+     * @param source the Department entity to clone
+     * @return a new Department instance with the same properties
+     */
+    Department clone(Department source);
+    
+    /**
      * Updates an existing Department entity with values from a DepartmentDTO.
      *
      * @param dto        the DepartmentDTO containing updated values

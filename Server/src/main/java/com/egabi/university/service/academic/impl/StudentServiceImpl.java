@@ -5,8 +5,8 @@ import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Level;
 import com.egabi.university.entity.Student;
 import com.egabi.university.entity.authentication.User;
+import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.ConflictException;
-import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.StudentMapper;
 import com.egabi.university.repository.StudentRepository;
 import com.egabi.university.service.academic.StudentService;
@@ -63,12 +63,6 @@ public class StudentServiceImpl implements StudentService {
         // Map the DTO to the entity
         Student student = studentMapper.toEntity(studentDTO);
         
-        // Check the student is associated with a user if yes set the user, otherwise leave it null
-        if (studentDTO.getUserId() != null) {
-            User user = validationService.getUserByIdOrThrow(studentDTO.getUserId());
-            student.setUser(user);
-        }
-        
         // Validate department - level and save student
         student = vaildateAndSaveStudent(student);
         
@@ -83,17 +77,22 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public StudentDTO updateStudent(Long studentId, StudentDTO studentDTO) {
         // Check if the student exists
-        validationService.assertStudentExists(studentId);
+        Student existingStudent = validationService.getStudentByIdOrThrow(studentId);
         
-        // Map the DTO to the entity
-        Student updatedStudent = studentMapper.toEntity(studentDTO);
-        updatedStudent.setId(studentId);
+        // Check if the sender changed any of the fields
+        Student newStudent = studentMapper.clone(existingStudent);
+        studentMapper.updateEntityFromDTO(studentDTO, newStudent);
+        boolean changed = !newStudent.equals(existingStudent);
         
-        // Validate department - level and update student
-        updatedStudent = vaildateAndSaveStudent(updatedStudent);
-        
-        // Return the saved student as a DTO
-        return studentMapper.toDTO(updatedStudent);
+        if (changed) {
+            // Update the existing student entity with data from the DTO [id and enrollments are ignored]
+            studentMapper.updateEntityFromDTO(studentDTO, existingStudent);
+            
+            // Validate department - level and update student
+            existingStudent = vaildateAndSaveStudent(existingStudent);
+        }
+        // Return the updated student as a DTO
+        return studentMapper.toDTO(existingStudent);
     }
     
     /**
@@ -111,7 +110,7 @@ public class StudentServiceImpl implements StudentService {
                     " because they are enrolled in courses", "STUDENT_HAS_ENROLLMENTS");
         
         // Delete the student
-        studentRepository.deleteById(studentId);
+        studentRepository.delete(student);
     }
     
     // ================================================================
@@ -183,7 +182,7 @@ public class StudentServiceImpl implements StudentService {
         // Validate level
         //1. ensure that the level is set
         Long levelId = Optional.ofNullable(student.getLevel()).map(Level::getId)
-                .orElseThrow(() -> new NotFoundException("Student must have a level", "LEVEL_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Student must have a level", "LEVEL_NOT_FOUND"));
         
         // 2. ensure that the level exists
         Level level = validationService.getLevelByIdOrThrow(levelId);
@@ -192,7 +191,7 @@ public class StudentServiceImpl implements StudentService {
         // Validate department
         //1. ensure that the department is set
         Long departmentId = Optional.ofNullable(student.getDepartment()).map(Department::getId)
-                .orElseThrow(() -> new NotFoundException("Student must be in a department", "DEPARTMENT_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Student must be in a department", "DEPARTMENT_NOT_FOUND"));
         
         // 2. ensure that the department exists
         Department department = validationService.getDepartmentByIdOrThrow(departmentId);

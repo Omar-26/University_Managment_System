@@ -4,6 +4,7 @@ import com.egabi.university.dto.CourseDTO;
 import com.egabi.university.entity.Course;
 import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Level;
+import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.CourseMapper;
@@ -79,17 +80,23 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public CourseDTO updateCourse(String code, CourseDTO courseDTO) {
         // Check if the course exists (it should exist for update)
-        validationService.assertCourseExists(code, true);
+        Course existingCourse = validationService.getCourseByCodeOrThrow(code);
         
-        // Map the DTO to the entity
-        Course updatedCourse = courseMapper.toEntity(courseDTO);
-        updatedCourse.setCode(code);
+        // Check if the course code is being changed
+        Course newCourse = courseMapper.clone(existingCourse);
+        courseMapper.updateEntityFromDTO(courseDTO, newCourse);
+        boolean changed = !newCourse.equals(existingCourse);
         
-        // Validate department - level and update the course
-        updatedCourse = validateAndSaveCourse(updatedCourse);
+        if (changed) {
+            // Update the existing course entity with data from the DTO [code and department are ignored]
+            courseMapper.updateEntityFromDTO(courseDTO, existingCourse);
+            
+            // Validate department - level and update the course
+            existingCourse = validateAndSaveCourse(existingCourse);
+        }
         
         // Return the updated course DTO
-        return courseMapper.toDTO(updatedCourse);
+        return courseMapper.toDTO(existingCourse);
     }
     
     /**
@@ -161,7 +168,7 @@ public class CourseServiceImpl implements CourseService {
         // Validate level
         // 1. Check if the level is set
         Long levelId = Optional.ofNullable(course.getLevel()).map(Level::getId)
-                .orElseThrow(() -> new NotFoundException("Course must have a level", "LEVEL_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Course must have a level", "LEVEL_NOT_FOUND"));
         
         // 2. Check if the level exists
         Level level = validationService.getLevelByIdOrThrow(levelId);
@@ -170,7 +177,7 @@ public class CourseServiceImpl implements CourseService {
         // Validate department
         // 1. Check if the department is set
         Long departmentId = Optional.ofNullable(course.getDepartment()).map(Department::getId)
-                .orElseThrow(() -> new NotFoundException("Course must have a department", "DEPARTMENT_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Course must have a department", "DEPARTMENT_NOT_FOUND"));
         
         // 2. Check if the department exists
         Department department = validationService.getDepartmentByIdOrThrow(departmentId);

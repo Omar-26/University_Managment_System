@@ -5,6 +5,7 @@ import com.egabi.university.entity.Faculty;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -32,12 +33,24 @@ public interface FacultyMapper {
     Faculty toEntity(FacultyDTO dto);
     
     /**
+     * Clones a Faculty entity.
+     * This method creates a new Faculty instance with the same properties as the source entity.
+     *
+     * @param source the Faculty entity to clone
+     * @return a new Faculty instance with the same properties
+     */
+    Faculty clone(Faculty source);
+    
+    /**
      * Updates an existing Faculty entity with values from a FacultyDTO.
      *
      * @param dto     the FacultyDTO containing updated values
      * @param faculty the Faculty entity to update
      */
-    @Mapping(target = "id", ignore = true)
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "departments", ignore = true)
+    })
     void updateEntityFromDTO(FacultyDTO dto, @MappingTarget Faculty faculty);
     
     /**

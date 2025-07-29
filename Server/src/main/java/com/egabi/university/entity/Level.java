@@ -1,8 +1,7 @@
 package com.egabi.university.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -14,8 +13,11 @@ import java.util.List;
  * Each level is associated with a faculty and can have multiple students and courses.
  */
 @Entity
+@Builder
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Level {
     
     @Id
@@ -23,6 +25,7 @@ public class Level {
     private Long id;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String name;
     
     @ManyToOne

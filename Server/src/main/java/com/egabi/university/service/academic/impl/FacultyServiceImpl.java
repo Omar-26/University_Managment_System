@@ -76,18 +76,25 @@ public class FacultyServiceImpl implements FacultyService {
     public FacultyDTO updateFaculty(Long facultyId, FacultyDTO facultyDTO) {
         // Validate that the faculty exists
         Faculty existingFaculty = validationService.getFacultyByIdOrThrow(facultyId);
-        // Check if the faculty name is changed and unique
-        if (!existingFaculty.getName().equals(facultyDTO.getName()))
+        
+        // Check if the sender changed any of the fields
+        Faculty newFaculty = facultyMapper.clone(existingFaculty);
+        facultyMapper.updateEntityFromDTO(facultyDTO, newFaculty);
+        boolean changed = !newFaculty.equals(existingFaculty);
+        
+        if (changed) {
+            // validate that the faculty name is unique
             validationService.assertFacultyNameUnique(facultyDTO.getName());
-        
-        // Update the existing faculty entity with values from the DTO
-        facultyMapper.updateEntityFromDTO(facultyDTO, existingFaculty);
-        
-        // Save the updated faculty entity
-        Faculty updatedFaculty = facultyRepository.save(existingFaculty);
+            
+            // Update the existing faculty entity the name from the DTO [id and departments are ignored]
+            facultyMapper.updateEntityFromDTO(facultyDTO, existingFaculty);
+            
+            // Map the updated entity back to DTO
+            facultyRepository.save(existingFaculty);
+        }
         
         // Return the saved faculty as a DTO
-        return facultyMapper.toDTO(updatedFaculty);
+        return facultyMapper.toDTO(existingFaculty);
     }
     
     /**

@@ -2,10 +2,7 @@ package com.egabi.university.entity;
 
 import com.egabi.university.entity.authentication.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Student {
     
     @Id
@@ -28,25 +26,32 @@ public class Student {
     private Long id;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String firstName;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String lastName;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String phoneNumber;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private LocalDate dateOfBirth;
     
+    @EqualsAndHashCode.Include
     private String gender;
     
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Department department;
     
     @ManyToOne
     @JoinColumn(name = "level_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Level level;
     
     // Student <-> Enrollment (one-to-many)

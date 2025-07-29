@@ -2,10 +2,7 @@ package com.egabi.university.mapper;
 
 import com.egabi.university.dto.CourseDTO;
 import com.egabi.university.entity.Course;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -39,6 +36,29 @@ public interface CourseMapper {
             @Mapping(source = "levelId", target = "level.id")
     })
     Course toEntity(CourseDTO dto);
+    
+    /**
+     * Clones a Course entity.
+     *
+     * @param source the Course entity to clone
+     * @return a new Course entity that is a clone of the source
+     */
+    Course clone(Course source);
+    
+    /**
+     * Updates an existing Course entity from a CourseDTO.
+     *
+     * @param dto    the CourseDTO containing updated data
+     * @param entity the Course entity to update
+     */
+    @Mappings({
+            @Mapping(target = "code", ignore = true),
+            @Mapping(target = "department.id", ignore = true),
+            @Mapping(target = "enrollments", ignore = true),
+            @Mapping(target = "instructors", ignore = true),
+            @Mapping(source = "levelId", target = "level.id")
+    })
+    void updateEntityFromDTO(CourseDTO dto, @MappingTarget Course entity);
     
     /**
      * Converts a list of Course entities to a list of CourseDTOs.

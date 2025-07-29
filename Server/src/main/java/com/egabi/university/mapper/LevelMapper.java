@@ -2,9 +2,7 @@ package com.egabi.university.mapper;
 
 import com.egabi.university.dto.LevelDTO;
 import com.egabi.university.entity.Level;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -32,6 +30,27 @@ public interface LevelMapper {
      */
     @Mapping(source = "facultyId", target = "faculty.id")
     Level toEntity(LevelDTO dto);
+    
+    /**
+     * Clones a Level entity.
+     * This method creates a new Level instance with the same properties as the source entity.
+     *
+     * @param source the Level entity to clone
+     * @return a new Level instance with the same properties
+     */
+    Level clone(Level source);
+    
+    /**
+     * Updates an existing Level entity with values from a LevelDTO.
+     *
+     * @param dto    the LevelDTO containing updated values
+     * @param entity the Level entity to be updated
+     */
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "faculty", ignore = true),
+    })
+    void updateEntityFromDTO(LevelDTO dto, @MappingTarget Level entity);
     
     /**
      * Converts a list of Level entities to a list of LevelDTOs.

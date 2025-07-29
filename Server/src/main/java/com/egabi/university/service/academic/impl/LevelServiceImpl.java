@@ -3,6 +3,7 @@ package com.egabi.university.service.academic.impl;
 import com.egabi.university.dto.LevelDTO;
 import com.egabi.university.entity.Faculty;
 import com.egabi.university.entity.Level;
+import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.ConflictException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.LevelMapper;
@@ -28,6 +29,9 @@ public class LevelServiceImpl implements LevelService {
     private final LevelMapper levelMapper;
     private final ValidationService validationService;
     
+    // ================================================================
+    // CRUD Methods
+    // ================================================================
     
     /**
      * {@inheritDoc}
@@ -74,20 +78,27 @@ public class LevelServiceImpl implements LevelService {
     @Override
     @Transactional
     public LevelDTO updateLevel(Long levelId, LevelDTO levelDTO) {
-        // Check if the level exists
-        validationService.assertLevelExists(levelId);
-        // Check if the name of the level is unique for this specific faculty
-        validationService.assertLevelNameUniquePerFaculty(levelDTO.getName(), levelDTO.getFacultyId());
+        // Validate that the level exists
+        Level existingLevel = validationService.getLevelByIdOrThrow(levelId);
         
-        // Map the DTO to the entity
-        Level updatedLevel = levelMapper.toEntity(levelDTO);
-        updatedLevel.setId(levelId);
+        // Check if the sender changed any of the fields
+        Level newLevel = levelMapper.clone(existingLevel);
+        levelMapper.updateEntityFromDTO(levelDTO, newLevel);
+        boolean changed = !newLevel.equals(existingLevel);
         
-        // Validate and save the updated level
-        updatedLevel = validateAndSaveLevel(updatedLevel);
+        if (changed) {
+            // Validate that the level name is unique for the faculty
+            validationService.assertLevelNameUniquePerFaculty(levelDTO.getName(), levelDTO.getFacultyId());
+            
+            // Update the existing level entity the name from the DTO [id and faculty are ignored]
+            levelMapper.updateEntityFromDTO(levelDTO, existingLevel);
+            
+            // save the updated level
+            levelRepository.save(existingLevel);
+        }
         
-        // Map the saved entity back to DTO
-        return levelMapper.toDTO(updatedLevel);
+        // Map the updated entity back to DTO
+        return levelMapper.toDTO(existingLevel);
     }
     
     /**
@@ -102,11 +113,11 @@ public class LevelServiceImpl implements LevelService {
         //Check if the level is associated with any students or courses
         if (!level.getStudents().isEmpty() || !level.getCourses().isEmpty())
             throw new ConflictException(
-                    "Cannot delete level id " + levelId + " because it has associated students or courses",
+                    "Cannot delete level with id " + levelId + " because it has associated students or courses",
                     "LEVEL_DELETE_CONFLICT");
         
         // Delete the level
-        levelRepository.deleteById(levelId);
+        levelRepository.delete(level);
     }
     
     // ================================================================
@@ -123,7 +134,7 @@ public class LevelServiceImpl implements LevelService {
     private Level validateAndSaveLevel(Level level) {
         // Validate faculty is set
         Long facultyId = Optional.ofNullable(level.getFaculty()).map(Faculty::getId)
-                .orElseThrow(() -> new NotFoundException("Level must be in a faculty", "FACULTY_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Level must be in a faculty", "FACULTY_NOT_PROVIDED"));
         
         // Validate faculty exists
         Faculty faculty = validationService.getFacultyByIdOrThrow(facultyId);

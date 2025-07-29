@@ -1,10 +1,7 @@
 package com.egabi.university.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +16,23 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Course {
     @Id
     @Column(unique = true, nullable = false)
     private String code;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private String name;
     
     @Column(nullable = false)
+    @EqualsAndHashCode.Include
     private Integer credits;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Level level;
     
     @ManyToOne(fetch = FetchType.LAZY)

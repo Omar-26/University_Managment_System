@@ -1,8 +1,7 @@
 package com.egabi.university.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Represents an enrollment of a student in a course.
@@ -10,8 +9,11 @@ import lombok.NoArgsConstructor;
  * It also contains the student's grade for the course.
  */
 @Entity
+@Builder
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Enrollment {
     @EmbeddedId
     private EnrollmentId id = new EnrollmentId();
@@ -26,5 +28,6 @@ public class Enrollment {
     @JoinColumn(name = "course_code", nullable = false)
     private Course course;
     
+    @EqualsAndHashCode.Include
     private Double grade;
 }

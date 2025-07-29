@@ -5,6 +5,7 @@ import com.egabi.university.entity.Course;
 import com.egabi.university.entity.Department;
 import com.egabi.university.entity.Instructor;
 import com.egabi.university.entity.authentication.User;
+import com.egabi.university.exception.BadRequestException;
 import com.egabi.university.exception.NotFoundException;
 import com.egabi.university.mapper.InstructorMapper;
 import com.egabi.university.repository.InstructorRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,12 +64,6 @@ public class InstructorServiceImpl implements InstructorService {
         // Map the DTO to the entity
         Instructor instructor = instructorMapper.toEntity(instructorDTO);
         
-        // Check the instructor is associated with a user if yes set the user, otherwise leave it null
-        if (instructorDTO.getUserId() != null) {
-            User user = validationService.getUserByIdOrThrow(instructorDTO.getUserId());
-            instructor.setUser(user);
-        }
-        
         // Validate department - courses and save instructor
         instructor = validateAndSaveInstructor(instructor);
         
@@ -88,7 +84,7 @@ public class InstructorServiceImpl implements InstructorService {
         instructorMapper.updateInstructorFromDto(instructorDTO, instructor);
         instructor.setId(instructorId);
         
-        // Validate department - courses and update instructor
+        // Validate department and courses, then update instructor
         instructor = validateAndSaveInstructor(instructor);
         
         // Return the updated instructor as a DTO
@@ -109,7 +105,7 @@ public class InstructorServiceImpl implements InstructorService {
             instructor.getCourses().forEach(course -> course.getInstructors().remove(instructor));
         
         // Delete the instructor
-        instructorRepository.deleteById(instructorId);
+        instructorRepository.delete(instructor);
     }
     
     // ================================================================
@@ -141,13 +137,14 @@ public class InstructorServiceImpl implements InstructorService {
      *
      * @param instructor The instructor to validate and save.
      * @return The saved instructor.
-     * @throws NotFoundException if the department is not found.
+     * @throws BadRequestException if the department is not set.
+     * @throws NotFoundException   if the department is not found.
      */
     private Instructor validateAndSaveInstructor(Instructor instructor) {
         // Validate department
         //1. ensure that the department is set
         Long departmentId = Optional.ofNullable(instructor.getDepartment()).map(Department::getId)
-                .orElseThrow(() -> new NotFoundException("Instructor must be in a department", "DEPARTMENT_NOT_FOUND"));
+                .orElseThrow(() -> new BadRequestException("Instructor must be in a department", "DEPARTMENT_NOT_FOUND"));
         
         // 2. ensure that the department exists
         Department department = validationService.getDepartmentByIdOrThrow(departmentId);
@@ -169,7 +166,7 @@ public class InstructorServiceImpl implements InstructorService {
                     instructorCourses.add(course);
             }
         } else
-            instructor.setCourses(List.of());
+            instructor.setCourses(new ArrayList<>());
         
         // Save the instructor
         return instructorRepository.save(instructor);
